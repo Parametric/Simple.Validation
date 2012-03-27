@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Simple.Validation.Ninject</id>
+    <version>$version$</version>
+    <authors>Parametric Portfolio Associates</authors>
+    <owners>Parametric Portoflio Associates</owners>
+    <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/Parametric/Simple.Validation</projectUrl>
+    <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides a Ninject implementation of the IValidatorProvider interface. Used with the Simple.Validation package.
+    </description>
+    <tags>Validation, Ninject</tags>
+    <dependencies>
+      <dependency id="Simple.Validation" version="0.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Simple.Validation.Ninject\bin\Release\Simple.Validation.Ninject.dll" target="lib\net40" />
+  </files>
+</package>

@@ -1,0 +1,9 @@
+# git ignore file
+*/bin
+*/obj
+/packages
+*.dotCover
+*.user
+*.suo
+*ncrunch*
+*crunchsolution*
