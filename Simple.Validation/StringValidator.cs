@@ -70,9 +70,9 @@ namespace Simple.Validation
             }
         }
 
-        public static StringValidatorContext<T> For<T>(Expression<Func<T, string>> propertyExpression)
+        public static StringPropertyValidator<T> For<T>(Expression<Func<T, string>> propertyExpression)
         {
-            return new StringValidatorContext<T>(propertyExpression);
+            return new StringPropertyValidator<T>(propertyExpression);
         }
     }
 }

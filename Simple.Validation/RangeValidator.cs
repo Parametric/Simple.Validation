@@ -56,5 +56,10 @@ namespace Simple.Validation
                     Type = RangeValidationResultType.ValueOutOfRange,
                 }; 
         }
+    
+        public static RangePropertyValidator<TContext, TProperty> For<TContext, TProperty>(Expression<Func<TContext, TProperty?>> propertyExpression ) where TProperty: struct, IComparable
+        {
+            return new RangePropertyValidator<TContext, TProperty>(propertyExpression);
+        }
     }
 }

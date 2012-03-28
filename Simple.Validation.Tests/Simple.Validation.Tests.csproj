@@ -60,7 +60,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RangePropertyValidatorTests.cs" />
     <Compile Include="DataAnnotations\DataAnnotationsValidatorTests.cs" />
+    <Compile Include="StringPropertyValidatorTests.cs" />
     <Compile Include="TestDomain\EmployeeWithoutDataAnnotations.cs" />
     <Compile Include="TestDomain\RulesSetEmployeeValidator.cs" />
     <Compile Include="TestDomain\Employee.cs" />

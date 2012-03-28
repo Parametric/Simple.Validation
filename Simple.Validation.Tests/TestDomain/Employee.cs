@@ -14,5 +14,7 @@ namespace Simple.Validation.Tests.TestDomain
 
         [Range(18, 35)]
         public int Age { get; set; }
+
+        public double? Salary { get; set; }
     }
 }
