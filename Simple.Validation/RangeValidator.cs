@@ -7,36 +7,28 @@ namespace Simple.Validation
 {
     public static class RangeValidator
     {
-        public static IEnumerable<ValidationResult> Validate<T>(RangeRequirements<T> requirements, object context, Expression<Func<object, T?>> propertyExpression, string message = "")
-            where T : struct, IComparable
-        {
-            var propertyInfo = ((MemberExpression)propertyExpression.Body).Member as PropertyInfo;
-            if (propertyInfo == null)
-            {
-                throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
-            }
+        //public static IEnumerable<ValidationResult> Validate(RangeRequirements requirements, object context, Expression<Func<object, IComparable>> propertyExpression, string message = "")
+        //{
+        //    var propertyInfo = ((MemberExpression)propertyExpression.Body).Member as PropertyInfo;
+        //    if (propertyInfo == null)
+        //    {
+        //        throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
+        //    }
 
+        //    var propertyValue = propertyExpression.Compile().Invoke(context);
+        //    var result = Validate(requirements, propertyValue, propertyInfo.Name, context, message);
+        //    return result;
+        //}
+
+        public static IEnumerable<ValidationResult> Validate(RangeRequirements requirements, object context, Expression<Func<object, IComparable>> propertyExpression, string message = "")
+        {
+            var propertyInfo = Expressions.GetPropertyInfoFromExpression(propertyExpression);
             var propertyValue = propertyExpression.Compile().Invoke(context);
             var result = Validate(requirements, propertyValue, propertyInfo.Name, context, message);
             return result;
         }
 
-        public static IEnumerable<ValidationResult> Validate<T>(RangeRequirements<T> requirements, object context, Expression<Func<object, T>> propertyExpression, string message = "")
-            where T : struct, IComparable
-        {
-            var propertyInfo = ((MemberExpression)propertyExpression.Body).Member as PropertyInfo;
-            if (propertyInfo == null)
-            {
-                throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
-            }
-
-            var propertyValue = propertyExpression.Compile().Invoke(context);
-            var result = Validate(requirements, propertyValue, propertyInfo.Name, context, message);
-            return result;
-        }
-
-        public static IEnumerable<ValidationResult> Validate<T>(RangeRequirements<T> requirements, T? valueToValidate, string propertyName, object context = null, string message = "") 
-            where T: struct, IComparable
+        public static IEnumerable<ValidationResult> Validate(RangeRequirements requirements, IComparable valueToValidate, string propertyName, object context = null, string message = "")
         {
             if (!requirements.IsValidMin(valueToValidate))
                 yield return new ValidationResult()
@@ -55,11 +47,6 @@ namespace Simple.Validation
                     PropertyName = propertyName,
                     Type = RangeValidationResultType.ValueOutOfRange,
                 }; 
-        }
-    
-        public static RangePropertyValidator<TContext, TProperty> For<TContext, TProperty>(Expression<Func<TContext, TProperty?>> propertyExpression ) where TProperty: struct, IComparable
-        {
-            return new RangePropertyValidator<TContext, TProperty>(propertyExpression);
         }
     }
 }

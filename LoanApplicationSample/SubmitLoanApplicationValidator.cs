@@ -1,10 +1,16 @@
 using System.Collections.Generic;
+using System.Linq;
 using Simple.Validation;
 
 namespace LoanApplicationSample
 {
     public class SubmitLoanApplicationValidator : IValidator<LoanApplication>
     {
+        const int MinLoanAmount = 50000;
+        const int MaxLoanAmount = 1500000;
+        const int MinCreditScore = 500;
+        const int MaxCreditScore = 830;
+
         public bool AppliesTo(string rulesSet)
         {
             return rulesSet == "Submit";
@@ -12,18 +18,24 @@ namespace LoanApplicationSample
 
         public IEnumerable<ValidationResult> Validate(LoanApplication value)
         {
-            var loanAmountResults = RangeValidator
-                .For<LoanApplication, long>(e => e.LoanAmount)
-                .GreaterThanOrEqualTo(50000)
-                .LessThanOrEqualTo(1500000)
+            var loanAmountResults = Properties<LoanApplication>
+                .For(e => e.LoanAmount)
+                .GreaterThanOrEqualTo(MinLoanAmount)
+                .LessThanOrEqualTo(MaxLoanAmount)
+                .Message("Loan amount must be between {0:C} and {1:C}", MinLoanAmount, MaxLoanAmount)
+                .Validate(value)
                 ;
 
-            var creditScoreResults = RangeValidator
-                .For<LoanApplication>
-                .GreaterThanOrEqualTo(500)
-                .LessThanOrEqualTo(830)
+            var creditScoreResults = Properties<LoanApplication>
+                .For(e => e.CreditScore)
+                .GreaterThanOrEqualTo(MinCreditScore)
+                .LessThanOrEqualTo(MaxCreditScore)
+                .Message("Credit score must be between {0} and {1}", MinCreditScore, MaxCreditScore)
+                .Validate(value)
                 ;
 
+            var results = loanAmountResults.Concat(creditScoreResults);
+            return results;
         }
     }
 }

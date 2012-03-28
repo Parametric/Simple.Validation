@@ -36,7 +36,7 @@ namespace Simple.Validation.Tests.TestDomain
                           , value);
 
             var ageResults = RangeValidator
-                .Validate(new RangeRequirements<int>()
+                .Validate(new RangeRequirements()
                               {
                                   MinValue = 18,
                                   MaxValue = 35,

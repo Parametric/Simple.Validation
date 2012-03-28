@@ -15,7 +15,7 @@ namespace Simple.Validation.Tests
         public void MinValue(double? minValue, double? valueToValidate, bool lowerInclusive, bool isValid)
         {
             // Arrange
-            var requirements = new RangeRequirements<double>()
+            var requirements = new RangeRequirements()
                                     {
                                         LowerInclusive = lowerInclusive,
                                         MinValue = minValue,
@@ -45,7 +45,7 @@ namespace Simple.Validation.Tests
         public void MaxValue(double? maxValue, double? valueToValidate, bool upperInclusive, bool isValid)
         {
             // Arrange
-            var requirements = new RangeRequirements<double>()
+            var requirements = new RangeRequirements()
             {
                 UpperInclusive = upperInclusive,
                 MaxValue = maxValue,
@@ -80,7 +80,7 @@ namespace Simple.Validation.Tests
             var instance = new TestClass();
 
             // Act
-            var validationResults = RangeValidator.Validate(new RangeRequirements<int>()
+            var validationResults = RangeValidator.Validate(new RangeRequirements()
             {
                 MinValue = 5
             }, instance, _ => instance.Amount, "Required");
@@ -100,7 +100,7 @@ namespace Simple.Validation.Tests
             var instance = new TestClass();
 
             // Act
-            var validationResults = RangeValidator.Validate(new RangeRequirements<int>()
+            var validationResults = RangeValidator.Validate(new RangeRequirements()
             {
                 MinValue = 5
             }, instance, _ => instance.Value, "Required");

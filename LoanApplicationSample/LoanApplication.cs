@@ -12,6 +12,6 @@ namespace LoanApplicationSample
 
         public long LoanAmount { get; set; }
 
-    ;
+        public int CreditScore { get; set; }
     }
 }

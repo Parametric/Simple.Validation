@@ -2,12 +2,12 @@
 
 namespace Simple.Validation
 {
-    public class RangeRequirements<T> where T: struct, IComparable
+    public class RangeRequirements
     {
         public bool LowerInclusive { get; set; }
-        public T? MinValue { get; set; }
+        public IComparable MinValue { get; set; }   
 
-        public T? MaxValue { get; set; }
+        public IComparable MaxValue { get; set; }
         public bool UpperInclusive { get; set; }
 
         public RangeRequirements()
@@ -16,33 +16,33 @@ namespace Simple.Validation
             UpperInclusive = true;
         }
 
-        internal bool IsValidMin(T? valueToValidate)
+        internal bool IsValidMin(IComparable valueToValidate)
         {
-            if (!MinValue.HasValue)
+            if (MinValue == null)
                 return true;
 
-            var compareValue = valueToValidate.GetValueOrDefault();
-            var minCompareResult = MinValue.Value.CompareTo(compareValue);
+            //var compareValue = valueToValidate.GetValueOrDefault();
+            var minCompareResult = MinValue.CompareTo(valueToValidate);
             if (minCompareResult > 0)
                 return false;
             
-            if (!LowerInclusive && MinValue.Value.Equals(compareValue))
+            if (!LowerInclusive && MinValue.Equals(valueToValidate))
                 return false;
 
             return true;
         }
 
-        internal bool IsValidMax(T? valueToValidate)
+        internal bool IsValidMax(IComparable valueToValidate)
         {
-            if (!MaxValue.HasValue)
+            if (MaxValue == null)
                 return true;
-
-            var compareValue = valueToValidate.GetValueOrDefault();
-            var maxCompareResult = MaxValue.Value.CompareTo(compareValue);
+            
+            //var compareValue = valueToValidate.GetValueOrDefault();
+            var maxCompareResult = MaxValue.CompareTo(valueToValidate);
             if (maxCompareResult < 0)
                 return false;
 
-            if (!UpperInclusive && MaxValue.Value.Equals(compareValue))
+            if (!UpperInclusive && MaxValue.Equals(valueToValidate))
                 return false;
 
             return true;

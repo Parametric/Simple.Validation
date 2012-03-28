@@ -13,7 +13,7 @@ namespace LoanApplicationSample
 
         public IEnumerable<ValidationResult> Validate(LoanApplication value)
         {
-            var nameResults = StringValidator
+            var nameResults = Properties
                 .For<LoanApplication>(e => e.Name)
                 .Required()
                 .Length(2, 100)
@@ -22,7 +22,7 @@ namespace LoanApplicationSample
                 .Validate(value)
                 ;
 
-            var reasonResults = StringValidator
+            var reasonResults = Properties
                 .For<LoanApplication>(e => e.Reason)
                 .Required()
                 .Length(10, 500)

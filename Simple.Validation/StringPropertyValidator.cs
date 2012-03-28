@@ -22,11 +22,7 @@ namespace Simple.Validation
             _propertyExpression = propertyExpression;
             this._stringRequirements = new StringRequirements();
 
-            var propertyInfo = ((MemberExpression)propertyExpression.Body).Member as PropertyInfo;
-            if (propertyInfo == null)
-            {
-                throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
-            }
+            var propertyInfo = Expressions.GetPropertyInfoFromExpression(propertyExpression);
 
             _propertyName = propertyInfo.Name;
         }

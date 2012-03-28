@@ -21,8 +21,8 @@ namespace Simple.Validation.Tests
                                {
                                    Salary = valueToValidate
                                };
-            var validator = RangeValidator
-                .For<Employee, double>(e => e.Salary)
+            var validator = Properties
+                .For<Employee>(e => e.Salary)
                 ;
 
             if (minValue.HasValue)
@@ -63,8 +63,8 @@ namespace Simple.Validation.Tests
             {
                 Salary = valueToValidate
             };
-            var validator = RangeValidator
-                .For<Employee, double>(e => e.Salary)
+            var validator = Properties
+                .For<Employee>(e => e.Salary)
                 ;
 
             if (maxValue.HasValue)

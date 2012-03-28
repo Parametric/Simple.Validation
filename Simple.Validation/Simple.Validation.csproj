@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAnnotations\ReflectionExtensions.cs" />
+    <Compile Include="Expressions.cs" />
+    <Compile Include="Properties.cs" />
     <Compile Include="RangePropertyValidator.cs" />
     <Compile Include="RulesSetValidatorBase.cs" />
     <Compile Include="StringPropertyValidator.cs" />

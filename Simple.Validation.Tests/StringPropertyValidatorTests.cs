@@ -25,7 +25,7 @@ namespace Simple.Validation.Tests
             if (actualLength.HasValue)
                 employee.LastName = new string('x', actualLength.Value);
 
-            var validator = StringValidator
+            var validator = Properties
                 .For<Employee>(e => e.LastName)
                 .Length(minLength);
 
@@ -49,7 +49,7 @@ namespace Simple.Validation.Tests
             // Arrange
             var employee = new Employee {LastName = "ABC  "};
 
-            var validator = StringValidator
+            var validator = Properties
                 .For<Employee>(e => e.LastName)
                 .Length(5)
                 .IgnoreWhiteSpace()
@@ -84,7 +84,7 @@ namespace Simple.Validation.Tests
             if (actualLength.HasValue)
                 employee.LastName = new string('x', actualLength.Value);
 
-            var validator = StringValidator
+            var validator = Properties
                 .For<Employee>(e => e.LastName)
                 .Length(null, maxLength);
 
@@ -108,7 +108,7 @@ namespace Simple.Validation.Tests
             // Arrange
             var employee = new Employee { LastName = "ABCD  " };
 
-            var validator = StringValidator
+            var validator = Properties
                 .For<Employee>(e => e.LastName)
                 .Length(null, 3)
                 .IgnoreWhiteSpace()
@@ -138,7 +138,7 @@ namespace Simple.Validation.Tests
         {
             // Arrange
             var employee = new Employee();
-            var validator = StringValidator
+            var validator = Properties
                 .For<Employee>(e => e.LastName)
                 ;
 
@@ -169,7 +169,7 @@ namespace Simple.Validation.Tests
         {
             // Arrange
             var employee = new Employee();
-            var validator = StringValidator
+            var validator = Properties
                 .For<Employee>(e => e.LastName)
                 .Required()
                 .IgnoreWhiteSpace()
@@ -197,7 +197,7 @@ namespace Simple.Validation.Tests
                                {
                                    LastName = value
                                };
-            var validator = StringValidator
+            var validator = Properties
                 .For<Employee>(e => e.LastName)
                 .Matches(regularExpression)
                 ;

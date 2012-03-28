@@ -69,10 +69,5 @@ namespace Simple.Validation
                 }
             }
         }
-
-        public static StringPropertyValidator<T> For<T>(Expression<Func<T, string>> propertyExpression)
-        {
-            return new StringPropertyValidator<T>(propertyExpression);
-        }
     }
 }
