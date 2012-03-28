@@ -20,9 +20,8 @@ namespace Simple.Validation.Tests.TestDomain
                                   Required = true,
                                   IgnoreWhiteSpace = true
                               }
-                          , value.FirstName
-                          , "FirstName"
-                          , value);
+                              , value, 
+                              _=> value.FirstName);
 
             var lastNameResults = StringValidator
                 .Validate(new StringRequirements()

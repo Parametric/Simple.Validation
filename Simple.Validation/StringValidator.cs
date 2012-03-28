@@ -7,7 +7,7 @@ namespace Simple.Validation
 {
     public static class StringValidator
     {
-        public static IEnumerable<ValidationResult> Validate(StringRequirements requirements, object context, Expression<Func<object, string>> propertyExpression, string message = "")
+        public static IEnumerable<ValidationResult> Validate<T>(StringRequirements requirements, T context, Expression<Func<T, string>> propertyExpression, string message = "")
         {
             var propertyInfo = ((MemberExpression)propertyExpression.Body).Member as PropertyInfo;
             if (propertyInfo == null)
@@ -68,6 +68,11 @@ namespace Simple.Validation
                                       };
                 }
             }
+        }
+
+        public static StringValidatorContext<T> For<T>(Expression<Func<T, string>> propertyExpression)
+        {
+            return new StringValidatorContext<T>(propertyExpression);
         }
     }
 }

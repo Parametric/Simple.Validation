@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="DataAnnotations\ReflectionExtensions.cs" />
     <Compile Include="RulesSetValidatorBase.cs" />
+    <Compile Include="StringValidatorContext.cs" />
     <Compile Include="TypeDelegationValidator.cs" />
     <Compile Include="DataAnnotations\DataAnnotationsValidator.cs" />
     <Compile Include="RangeRequirements.cs" />
