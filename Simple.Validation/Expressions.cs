@@ -77,5 +77,17 @@ namespace Simple.Validation
             }
             return propertyInfo;
         }
+
+        public static PropertyInfo GetPropertyInfoFromExpression<T>(Expression<Func<T, object>> propertyExpression)
+        {
+            var memberExpression = Expressions.GetMemberExpression(propertyExpression);
+
+            var propertyInfo = memberExpression.Member as PropertyInfo;
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
+            }
+            return propertyInfo;
+        }
     }
 }

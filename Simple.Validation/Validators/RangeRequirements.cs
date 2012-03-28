@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Simple.Validation
+namespace Simple.Validation.Validators
 {
     public class RangeRequirements
     {
@@ -21,7 +21,6 @@ namespace Simple.Validation
             if (MinValue == null)
                 return true;
 
-            //var compareValue = valueToValidate.GetValueOrDefault();
             var minCompareResult = MinValue.CompareTo(valueToValidate);
             if (minCompareResult > 0)
                 return false;
@@ -37,7 +36,6 @@ namespace Simple.Validation
             if (MaxValue == null)
                 return true;
             
-            //var compareValue = valueToValidate.GetValueOrDefault();
             var maxCompareResult = MaxValue.CompareTo(valueToValidate);
             if (maxCompareResult < 0)
                 return false;

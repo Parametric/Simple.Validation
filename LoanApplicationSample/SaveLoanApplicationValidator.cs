@@ -13,7 +13,6 @@ namespace LoanApplicationSample
 
         public IEnumerable<ValidationResult> Validate(LoanApplication value)
         {
-
             var nameResults = Properties<LoanApplication>
                 .For(e => e.Name)
                 .Required()

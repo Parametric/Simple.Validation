@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Simple.Validation
+namespace Simple.Validation.Validators
 {
     public class TypeDelegationValidator<TSubClass, TSuperClass> : IValidator<TSubClass> where TSubClass : TSuperClass
     {

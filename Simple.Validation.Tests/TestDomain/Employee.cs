@@ -16,5 +16,7 @@ namespace Simple.Validation.Tests.TestDomain
         public int Age { get; set; }
 
         public double? Salary { get; set; }
+
+        public Manager ReportsTo { get; set; }
     }
 }

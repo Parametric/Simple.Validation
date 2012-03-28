@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace Simple.Validation
+namespace Simple.Validation.Validators
 {
     public class StringRequirements
     {

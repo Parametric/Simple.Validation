@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using Simple.Validation.Validators;
 
 namespace Simple.Validation
 {
@@ -26,6 +27,11 @@ namespace Simple.Validation
         public static StringPropertyValidator<T> For(Expression<Func<T, string>> propertyExpression)
         {
             return new StringPropertyValidator<T>(propertyExpression);
+        }
+
+        public static ReferencePropertyValidator<T> For(Expression<Func<T, object>> propertyExpression)
+        {
+            return new ReferencePropertyValidator<T>(propertyExpression);
         }
     }
 }

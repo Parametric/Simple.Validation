@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using Simple.Validation.Validators;
 
 namespace Simple.Validation.Tests
 {
