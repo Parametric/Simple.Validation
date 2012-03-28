@@ -14,6 +14,7 @@
     <tags>Validation, Ninject</tags>
     <dependencies>
       <dependency id="Simple.Validation" version="0.1" />
+      <dependency id="Ninject" version="3.0.0.15" />
     </dependencies>
   </metadata>
   <files>
