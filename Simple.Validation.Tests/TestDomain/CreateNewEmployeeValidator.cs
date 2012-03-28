@@ -12,42 +12,29 @@ namespace Simple.Validation.Tests.TestDomain
 
         public IEnumerable<ValidationResult> Validate(Employee value)
         {
-            var firstNameResults = StringValidator
-                .Validate(new StringRequirements()
-                              {
-                                  MinLength = 3,
-                                  MaxLength = 50,
-                                  Required = true,
-                                  IgnoreWhiteSpace = true
-                              }
-                              , value, 
-                              _=> value.FirstName);
+            var firstNameResults = Properties<Employee>
+                .For(e => e.FirstName)
+                .Length(3, 50)
+                .Required()
+                .IgnoreWhiteSpace()
+                .Validate(value);
 
-            var lastNameResults = StringValidator
-                .Validate(new StringRequirements()
-                              {
-                                  MinLength = 3,
-                                  MaxLength = 50,
-                                  Required = true,
-                                  IgnoreWhiteSpace = true
-                              }
-                          , value.LastName
-                          , "LastName"
-                          , value);
+            var lastNameResults = Properties<Employee>
+                .For(e => e.LastName)
+                .Length(3, 50)
+                .Required()
+                .IgnoreWhiteSpace()
+                .Validate(value);
 
-            var ageResults = RangeValidator
-                .Validate(new RangeRequirements()
-                              {
-                                  MinValue = 18,
-                                  MaxValue = 35,
-                              }
-                          , value.Age
-                          , "Age"
-                          , value);
+            var ageResults = Properties<Employee>
+                .For(e => e.Age)
+                .MinValue(18)
+                .MaxValue(35)
+                .Validate(value);
 
             return firstNameResults
-                .Union(lastNameResults)
-                .Union(ageResults)
+                .Concat(lastNameResults)
+                .Concat(ageResults)
                 ;
         }
     }

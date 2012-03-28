@@ -128,9 +128,12 @@ namespace Simple.Validation.Tests
             Validator.SetValidatorProvider(stubProvider);
 
             // Act
-            Assert.DoesNotThrow(() => Validator.Enforce(new object()));
+            IEnumerable<ValidationResult> results = null;
+            Assert.DoesNotThrow(() => { results = Validator.Enforce(new object()); });
 
             // Assert
+            Assert.That(results, Is.Not.Null);
+            Assert.That(results, Is.Not.Empty);
         }
 
         [Test]
@@ -150,9 +153,12 @@ namespace Simple.Validation.Tests
             Validator.SetValidatorProvider(stubProvider);
 
             // Act
-            Assert.DoesNotThrow(() => Validator.Enforce(new object()));
+            IEnumerable<ValidationResult> results = null;
+            Assert.DoesNotThrow(() => { results = Validator.Enforce(new object()); });
 
             // Assert
+            Assert.That(results, Is.Not.Null);
+            Assert.That(results, Is.Not.Empty);
         }
 
         [Test]
@@ -176,5 +182,47 @@ namespace Simple.Validation.Tests
 
             // Assert
         }
+
+
+        [Test]
+        public void When_appliesTo_is_true_then_validator_is_executed()
+        {
+            // Arrange
+            var mockValidator = Substitute.For<IValidator<object>>();
+            mockValidator.AppliesTo("").Returns(true);
+
+            var provider = new DefaultValidatorProvider();
+            provider.RegisterValidator(mockValidator);
+
+            Validator.SetValidatorProvider(provider);
+
+            // Act
+            var objectToValidate = new object();
+            Validator.Validate(objectToValidate);
+
+            // Assert
+            mockValidator.Received().Validate(objectToValidate);
+        }
+
+        [Test]
+        public void When_appliesTo_is_false_then_validator_is_not_executed()
+        {
+            // Arrange
+            var mockValidator = Substitute.For<IValidator<object>>();
+            mockValidator.AppliesTo("").Returns(false);
+
+            var provider = new DefaultValidatorProvider();
+            provider.RegisterValidator(mockValidator);
+
+            Validator.SetValidatorProvider(provider);
+
+            // Act
+            var objectToValidate = new object();
+            Validator.Validate(objectToValidate);
+
+            // Assert
+            mockValidator.DidNotReceive().Validate(objectToValidate);
+        }
+
     }
 }

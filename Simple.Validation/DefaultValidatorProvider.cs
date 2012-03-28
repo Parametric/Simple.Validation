@@ -12,17 +12,9 @@ namespace Simple.Validation
             _validators.Add(validator);
         }
 
-        public IEnumerable<IValidator<T>> GetValidators<T>(params string[] rulesSets)
+        public IEnumerable<IValidator<T>> GetValidators<T>()
         {
-            if (!rulesSets.Any())
-                rulesSets = new[]{""};
-
-            var q = from rulesSet in rulesSets
-                    from validator in _validators.OfType<IValidator<T>>()
-                    where validator.AppliesTo(rulesSet)
-                    select validator;
-
-            return q;
+            return _validators.OfType<IValidator<T>>();
         }
     }
 

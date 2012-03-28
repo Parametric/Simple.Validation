@@ -25,9 +25,15 @@ namespace Simple.Validation
 
         public static IEnumerable<ValidationResult> Validate<T>(T value, params string[] rulesSets)
         {
-            var validators = ValidatorProvider
-                .GetValidators<T>(rulesSets)
-                ;
+            if (rulesSets == null || !rulesSets.Any())
+                rulesSets = new[]{""};
+
+            var validators = 
+                    from validator in ValidatorProvider.GetValidators<T>()
+                    from rulesSet in rulesSets
+                    where validator.AppliesTo(rulesSet)
+                    select validator;
+
             var validationResults = validators
                 .SelectMany(v => v.Validate(value))
                 .ToList()
@@ -35,11 +41,12 @@ namespace Simple.Validation
             return validationResults;
         }
 
-        public static void Enforce<T>(T value, params string[] rulesSets)
+        public static IEnumerable<ValidationResult> Enforce<T>(T value, params string[] rulesSets)
         {
             var results = Validate(value, rulesSets);
             if (results.HasErrors())
                 throw new ValidationException(results.ToArray(), value, rulesSets);
+            return results;
         }
 
         static Validator()

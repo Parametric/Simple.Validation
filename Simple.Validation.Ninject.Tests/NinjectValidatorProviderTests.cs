@@ -8,7 +8,7 @@ namespace Simple.Validation.Ninject.Tests
     public class NinjectValidatorProviderTests
     {
         [Test]
-        public void When_appliesTo_is_true_then_validator_is_executed()
+        public void GetValidators()
         {
             // Arrange
             var mockValidator = Substitute.For<IValidator<object>>();
@@ -18,35 +18,14 @@ namespace Simple.Validation.Ninject.Tests
             kernel.Bind<IValidator<object>>().ToConstant(mockValidator);
             var provider = new NinjectValidatorProvider(kernel);
 
-            Validator.SetValidatorProvider(provider);
+            
 
             // Act
-            var objectToValidate = new object();
-            Validator.Validate(objectToValidate);
+            var validators = provider.GetValidators<object>();
 
             // Assert
-            mockValidator.Received().Validate(objectToValidate);
-        }
-
-        [Test]
-        public void When_appliesTo_is_false_then_validator_is_not_executed()
-        {
-            // Arrange
-            var mockValidator = Substitute.For<IValidator<object>>();
-            mockValidator.AppliesTo("").Returns(false);
-
-            var kernel = new StandardKernel();
-            kernel.Bind<IValidator<object>>().ToConstant(mockValidator);
-            var provider = new NinjectValidatorProvider(kernel);
-
-            Validator.SetValidatorProvider(provider);
-
-            // Act
-            var objectToValidate = new object();
-            Validator.Validate(objectToValidate);
-
-            // Assert
-            mockValidator.DidNotReceive().Validate(objectToValidate);
+            Assert.That(validators, Is.Not.Empty);
+            Assert.That(validators, Has.Member(mockValidator));
         }
 
     }

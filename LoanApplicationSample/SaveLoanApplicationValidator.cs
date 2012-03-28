@@ -13,8 +13,9 @@ namespace LoanApplicationSample
 
         public IEnumerable<ValidationResult> Validate(LoanApplication value)
         {
-            var nameResults = Properties
-                .For<LoanApplication>(e => e.Name)
+
+            var nameResults = Properties<LoanApplication>
+                .For(e => e.Name)
                 .Required()
                 .Length(2, 100)
                 .Message("Name is required.")
@@ -22,8 +23,8 @@ namespace LoanApplicationSample
                 .Validate(value)
                 ;
 
-            var reasonResults = Properties
-                .For<LoanApplication>(e => e.Reason)
+            var reasonResults = Properties<LoanApplication>
+                .For(e => e.Reason)
                 .Required()
                 .Length(10, 500)
                 .IgnoreWhiteSpace()
