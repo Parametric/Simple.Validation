@@ -21,7 +21,7 @@ namespace Simple.Validation
         }
     }
 
-    public static class ValidationExtensions
+    public static class ValidationResultExtensions
     {
         public static bool HasErrors(this IEnumerable<ValidationResult> self)
         {
