@@ -142,11 +142,11 @@ namespace Simple.Validation.Validators
             return this;
         }
 
-        public StringPropertyValidator<T> Matches(string regularExpression)
+        public StringPropertyValidator<T> Matches(string regularExpression, RegexOptions options = RegexOptions.None)
         {
             this._regularExpression = regularExpression;
             if (!string.IsNullOrWhiteSpace(regularExpression))
-                _regex = new Regex(regularExpression);
+                _regex = new Regex(regularExpression, options);
             return this;
         }
 

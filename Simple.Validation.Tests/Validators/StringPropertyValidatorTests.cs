@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Personnel.Sample;
 
@@ -216,6 +217,36 @@ namespace Simple.Validation.Tests.Validators
                 results.AssertInvalidFor("LastName", TextValidationResultType.RegularExpressionMismatch);
             }
 
+        }
+
+        [Test]
+        [TestCase(@"\d{5}", "12345", RegexOptions.None,  true)]
+        [TestCase(@" \d{5} ", "12345", RegexOptions.IgnorePatternWhitespace, true)]
+        [TestCase(@" \d{5} ", "12345", RegexOptions.None, false)]
+        public void RegularExpressionWithOptions(string regularExpression, string value,RegexOptions options, bool isValid)
+        {
+            // Arrange
+            var employee = new Employee()
+            {
+                LastName = value
+            };
+            var validator = Properties
+                .For<Employee>(e => e.LastName)
+                .Matches(regularExpression, options)
+                ;
+
+            // Act
+            var results = validator.Validate(employee);
+
+            // Assert
+            if (isValid)
+            {
+                results.AssertValidFor("LastName", TextValidationResultType.RegularExpressionMismatch);
+            }
+            else
+            {
+                results.AssertInvalidFor("LastName", TextValidationResultType.RegularExpressionMismatch);
+            }
         }
 
         [Test]
