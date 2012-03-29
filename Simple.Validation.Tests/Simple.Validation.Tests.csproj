@@ -60,22 +60,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChildPropertyValidatorTests.cs" />
-    <Compile Include="RangePropertyValidatorTests.cs" />
+    <Compile Include="Validators\ChildPropertyValidatorTests.cs" />
+    <Compile Include="Validators\RangePropertyValidatorTests.cs" />
     <Compile Include="DataAnnotations\DataAnnotationsValidatorTests.cs" />
-    <Compile Include="StringPropertyValidatorTests.cs" />
-    <Compile Include="TestDomain\EmployeeWithoutDataAnnotations.cs" />
-    <Compile Include="TestDomain\Manager.cs" />
-    <Compile Include="TestDomain\RulesSetEmployeeValidator.cs" />
-    <Compile Include="TestDomain\Employee.cs" />
-    <Compile Include="TestDomain\EmployeeOperations.cs" />
-    <Compile Include="TestDomain\CreateNewEmployeeValidator.cs" />
+    <Compile Include="Validators\StringPropertyValidatorTests.cs" />
     <Compile Include="DefaultValidatorProviderTests.cs" />
-    <Compile Include="DefaultValidatorBaseTests.cs" />
+    <Compile Include="Validators\DefaultValidatorBaseTests.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="RangeValidatorTests.cs" />
-    <Compile Include="StringValidatorTests.cs" />
-    <Compile Include="TestDomain\IEmployee.cs" />
+    <Compile Include="Validators\RangeValidatorTests.cs" />
+    <Compile Include="Validators\StringValidatorTests.cs" />
     <Compile Include="ValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -83,10 +76,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Personnel.Sample\Personnel.Sample.csproj">
+      <Project>{64CB1A9F-F147-4B27-8F60-59F014736F5A}</Project>
+      <Name>Personnel.Sample</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Simple.Validation\Simple.Validation.csproj">
       <Project>{D3C227E5-5560-42BE-B5DE-D7A2ED75DA56}</Project>
       <Name>Simple.Validation</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TestDomain\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

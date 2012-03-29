@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using Simple.Validation.Tests.TestDomain;
 
-namespace Simple.Validation.Tests.TestDomain
+namespace Personnel.Sample
 {
     public class Employee : IEmployee
     {
@@ -18,5 +20,7 @@ namespace Simple.Validation.Tests.TestDomain
         public double? Salary { get; set; }
 
         public Manager ReportsTo { get; set; }
+
+        public Address Address { get; set; }
     }
 }
