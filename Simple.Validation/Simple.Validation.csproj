@@ -44,11 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comparers\PredicateEqualityComparer.cs" />
+    <Compile Include="Comparers\SelectorEqualityComparer.cs" />
     <Compile Include="DataAnnotations\ReflectionExtensions.cs" />
     <Compile Include="Expressions.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Validators\CompositeValidator.cs" />
     <Compile Include="Validators\EnumerablePropertyValidator.cs" />
+    <Compile Include="Comparers\EqualityComparerAdapter.cs" />
     <Compile Include="Validators\PropertyValidatorBase.cs" />
     <Compile Include="Validators\RangePropertyValidator.cs" />
     <Compile Include="RulesSetValidatorBase.cs" />
