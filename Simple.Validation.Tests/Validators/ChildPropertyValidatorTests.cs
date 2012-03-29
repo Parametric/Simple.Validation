@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Simple.Validation.Tests.TestDomain;
 
-namespace Simple.Validation.Tests
+namespace Simple.Validation.Tests.Validators
 {
     [TestFixture]
     public class ChildPropertyValidatorTests

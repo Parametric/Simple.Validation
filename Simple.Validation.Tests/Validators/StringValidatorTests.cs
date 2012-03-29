@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Simple.Validation.Validators;
 
-namespace Simple.Validation.Tests
+namespace Simple.Validation.Tests.Validators
 {
     [TestFixture]
     public class StringValidatorTests
