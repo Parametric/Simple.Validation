@@ -1,18 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Simple.Validation.Validators
 {
-    public class PropertyValidatorBase<T>
+    public abstract class PropertyValidatorBase<T> : IValidator<T>
     {
-        public PropertyValidatorBase(Expression<Func<T, object>> propertyExpression)
+        protected PropertyValidatorBase(LambdaExpression  propertyExpression)
         {
             PropertyExpression = propertyExpression;
             PropertyInfo = Expressions.GetPropertyInfoFromExpression(propertyExpression);
         }
 
-        protected Expression<Func<T, object>> PropertyExpression { get; private set; }
+        protected LambdaExpression  PropertyExpression { get; private set; }
         protected PropertyInfo PropertyInfo { get; private set; }
+    
+        protected TPropertyType GetPropertyValue<TPropertyType>(T context)
+        {
+            return (TPropertyType)PropertyExpression.Compile().DynamicInvoke(context);
+        }
+
+        public abstract bool AppliesTo(string rulesSet);
+        public abstract IEnumerable<ValidationResult> Validate(T value);
     }
 }

@@ -6,26 +6,26 @@ using System.Text.RegularExpressions;
 
 namespace Simple.Validation.Validators
 {
-    public class StringPropertyValidator<T> : IValidator<T>
+    public class StringPropertyValidator<T> : PropertyValidatorBase<T> //, IValidator<T>
     {
-        private readonly Expression<Func<T, string>> _propertyExpression;
-        private readonly StringRequirements _requirements;
-        private readonly string _propertyName;
         private string _message;
+        private ValidationResultSeverity _severity;
 
-        public bool AppliesTo(string rulesSet)
+        private bool _ignoreWhiteSpace;
+        private bool _required;
+        private int? _minLength;
+        private int? _maxLength;
+        private string _regularExpression;
+        private Regex _regex;
+
+        public override bool AppliesTo(string rulesSet)
         {
             return true;
         }
 
-        public StringPropertyValidator(Expression<Func<T, string>> propertyExpression)
+        public StringPropertyValidator(Expression<Func<T, string>> propertyExpression) : base(propertyExpression)
         {
-            _propertyExpression = propertyExpression;
-            this._requirements = new StringRequirements();
-
-            var propertyInfo = Expressions.GetPropertyInfoFromExpression(propertyExpression);
-
-            _propertyName = propertyInfo.Name;
+            Severity(ValidationResultSeverity.Error);
         }
 
         public StringPropertyValidator<T> Message(string format, params object[] arguments)
@@ -34,103 +34,125 @@ namespace Simple.Validation.Validators
             return this;
         }
 
-        public IEnumerable<ValidationResult> Validate(T value)
+        public override IEnumerable<ValidationResult> Validate(T value)
         {
-            var propertyValue = _propertyExpression.Compile().Invoke(value);
-            var results = Validate(this._requirements, propertyValue, _propertyName, value, _message);
+            var propertyValue = base.GetPropertyValue<string>(value);
+            var results = Validate(propertyValue, value, _message);
             return results;
         }
 
-        private IEnumerable<ValidationResult> Validate(StringRequirements requirements, string value, string propertyName, object context = null, string message = "")
+        internal string GetValueToValidate(string value)
         {
-            var valueToValidate = requirements.GetValueToValidate(value);
+            if (string.IsNullOrWhiteSpace(value))
+                if (_ignoreWhiteSpace)
+                    return null;
 
-            if (requirements.Required && string.IsNullOrWhiteSpace(valueToValidate))
+            if (_ignoreWhiteSpace)
+                return value.Trim();
+
+            return value;
+        }
+
+        private IEnumerable<ValidationResult> Validate(string value, object context = null, string message = "")
+        {
+            var valueToValidate = GetValueToValidate(value);
+
+            if (_required && string.IsNullOrWhiteSpace(valueToValidate))
                 yield return new ValidationResult()
                 {
                     Context = context,
                     Message = message,
-                    PropertyName = propertyName,
+                    PropertyName = PropertyInfo.Name,
                     Type = TextValidationResultType.RequiredValueNotFound,
-                    Severity = requirements.Severity,
+                    Severity = _severity,
                 };
 
             if (value == null)
                 yield break;
 
-            if (requirements.MinLength.HasValue && valueToValidate.Length < requirements.MinLength)
+            if (_minLength.HasValue && valueToValidate.Length < _minLength)
                 yield return new ValidationResult()
                 {
                     Context = context,
                     Message = message,
-                    PropertyName = propertyName,
+                    PropertyName = PropertyInfo.Name,
                     Type = TextValidationResultType.TextLengthOutOfRange,
                 };
 
-            if (requirements.MaxLength.HasValue && valueToValidate.Length > requirements.MaxLength)
+            if (_maxLength.HasValue && valueToValidate.Length > _maxLength)
                 yield return new ValidationResult()
                 {
                     Context = context,
                     Message = message,
-                    PropertyName = propertyName,
+                    PropertyName = PropertyInfo.Name,
                     Type = TextValidationResultType.TextLengthOutOfRange,
                 };
 
-            if (!string.IsNullOrWhiteSpace(requirements.RegularExpression))
+            if (!string.IsNullOrWhiteSpace(_regularExpression))
             {
-                if (!requirements.IsRegExMatch(valueToValidate))
+                if (!IsRegExMatch(valueToValidate))
                 {
                     yield return new ValidationResult()
                     {
                         Context = context,
                         Message = message,
-                        PropertyName = propertyName,
+                        PropertyName = PropertyInfo.Name,
                         Type = TextValidationResultType.RegularExpressionMismatch,
                     };
                 }
             }
         }
 
+        private bool IsRegExMatch(string value)
+        {
+            if (_regex == null)
+                throw new InvalidOperationException();
+
+            return _regex.IsMatch(value);
+        }
+
         public StringPropertyValidator<T> Length(int? minLength, int? maxLength = null)
         {
-            this._requirements.MinLength = minLength;
-            this._requirements.MaxLength = maxLength;
+            this._minLength = minLength;
+            this._maxLength = maxLength;
             return this;
         }
 
         public StringPropertyValidator<T> Required()
         {
-            this._requirements.Required = true;
+            this._required = true;
             return this;
         }
 
         public StringPropertyValidator<T> NotRequired()
         {
-            this._requirements.Required = false;
+            this._required = false;
             return this;
         }
     
         public StringPropertyValidator<T> IgnoreWhiteSpace()
         {
-            this._requirements.IgnoreWhiteSpace = true;
+            this._ignoreWhiteSpace = true;
             return this;
         }
 
         public StringPropertyValidator<T> DoNotIgnoreWhiteSpace()
         {
-            this._requirements.IgnoreWhiteSpace = false;
+            this._ignoreWhiteSpace = false;
             return this;
         }
 
         public StringPropertyValidator<T> Matches(string regularExpression)
         {
-            this._requirements.RegularExpression = regularExpression;
+            this._regularExpression = regularExpression;
+            if (!string.IsNullOrWhiteSpace(regularExpression))
+                _regex = new Regex(regularExpression);
             return this;
         }
 
         public StringPropertyValidator<T> Severity(ValidationResultSeverity validationResultSeverity)
         {
-            this._requirements.Severity = validationResultSeverity;
+            this._severity = validationResultSeverity;
             return this;
         }
     }

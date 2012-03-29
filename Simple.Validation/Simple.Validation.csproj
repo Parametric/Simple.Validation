@@ -55,8 +55,6 @@
     <Compile Include="Validators\StringPropertyValidator.cs" />
     <Compile Include="Validators\TypeDelegationValidator.cs" />
     <Compile Include="DataAnnotations\DataAnnotationsValidator.cs" />
-    <Compile Include="Validators\RangeRequirements.cs" />
-    <Compile Include="Validators\StringRequirements.cs" />
     <Compile Include="ValidationException.cs" />
     <Compile Include="ValidationResult.cs" />
     <Compile Include="DefaultValidatorProvider.cs" />

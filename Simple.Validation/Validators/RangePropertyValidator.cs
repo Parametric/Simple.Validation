@@ -1,63 +1,86 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Simple.Validation.Validators
 {
-    public class RangePropertyValidator<TContext> : IValidator<TContext> 
+    public class RangePropertyValidator<TContext> : PropertyValidatorBase<TContext> //, IValidator<TContext> 
     {
-        private readonly Expression<Func<TContext, IComparable>> _propertyExpression;
-        private readonly RangeRequirements _rangeRequirements;
-        private readonly string _propertyName;
         private string _message;
+        private IComparable _minValue;
+        private IComparable _maxValue;
+        private bool _lowerInclusive = true;
+        private bool _upperInclusive = true;
+        private ValidationResultSeverity _severity;
 
-        public bool AppliesTo(string rulesSet)
+        public RangePropertyValidator(Expression<Func<TContext, IComparable>> propertyExpression) : base(propertyExpression)
+        {
+            Severity(ValidationResultSeverity.Error);
+        }
+
+        public override bool AppliesTo(string rulesSet)
         {
             return true;
         }
 
-        public IEnumerable<ValidationResult> Validate(TContext value)
+        public override IEnumerable<ValidationResult> Validate(TContext value)
         {
-            var propertyValue = _propertyExpression.Compile().Invoke(value);
-            return Validate(_rangeRequirements, propertyValue, _propertyName, value, _message);
+            var propertyValue = base.GetPropertyValue<IComparable>(value); 
+            return Validate(propertyValue, value, _message);
         }
 
-        private IEnumerable<ValidationResult> Validate(RangeRequirements requirements, IComparable valueToValidate, string propertyName, object context = null, string message = "")
+        private IEnumerable<ValidationResult> Validate(IComparable valueToValidate, object context = null, string message = "")
         {
-            if (!requirements.IsValidMin(valueToValidate))
+            if (!IsValidMin(valueToValidate))
                 yield return new ValidationResult()
                 {
                     Context = context,
                     Message = message,
-                    PropertyName = propertyName,
+                    PropertyName = PropertyInfo.Name,
                     Type = RangeValidationResultType.ValueOutOfRange,
-                    Severity = requirements.Severity,
+                    Severity = _severity,
                 };
 
-            if (!requirements.IsValidMax(valueToValidate))
+            if (!IsValidMax(valueToValidate))
                 yield return new ValidationResult()
                 {
                     Context = context,
                     Message = message,
-                    PropertyName = propertyName,
+                    PropertyName = PropertyInfo.Name,
                     Type = RangeValidationResultType.ValueOutOfRange,
-                    Severity = requirements.Severity,
+                    Severity = _severity,
                 };
         }
 
-
-        public RangePropertyValidator(Expression<Func<TContext, IComparable>> propertyExpression)
+        private bool IsValidMin(IComparable valueToValidate)
         {
-            _propertyExpression = propertyExpression;
-            this._rangeRequirements = new RangeRequirements();
+            if (_minValue == null)
+                return true;
 
-            var propertyInfo = Expressions.GetPropertyInfoFromExpression(propertyExpression);
-            if (propertyInfo == null)
-            {
-                throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
-            }
+            var minCompareResult = _minValue.CompareTo(valueToValidate);
+            if (minCompareResult > 0)
+                return false;
 
-            _propertyName = propertyInfo.Name;
+            if (!_lowerInclusive && _minValue.Equals(valueToValidate))
+                return false;
+
+            return true;
+        }
+
+        private bool IsValidMax(IComparable valueToValidate)
+        {
+            if (_maxValue == null)
+                return true;
+
+            var maxCompareResult = _maxValue.CompareTo(valueToValidate);
+            if (maxCompareResult < 0)
+                return false;
+
+            if (!_upperInclusive && _maxValue.Equals(valueToValidate))
+                return false;
+
+            return true;
         }
 
         public RangePropertyValidator<TContext> Message(string format, params object[] arguments)
@@ -68,13 +91,13 @@ namespace Simple.Validation.Validators
 
         public RangePropertyValidator<TContext> MinValue(IComparable minValue)
         {
-            _rangeRequirements.MinValue = minValue;
+            _minValue = minValue;
             return this;
         }
 
         public RangePropertyValidator<TContext> MaxValue(IComparable maxValue)
         {
-            _rangeRequirements.MaxValue = maxValue;
+            _maxValue = maxValue;
             return this;
         }
 
@@ -100,31 +123,31 @@ namespace Simple.Validation.Validators
 
         public RangePropertyValidator<TContext> LowerInclusive()
         {
-            _rangeRequirements.LowerInclusive = true;
+            _lowerInclusive = true;
             return this;
         }
 
         public RangePropertyValidator<TContext> LowerExclusive()
         {
-            _rangeRequirements.LowerInclusive = false;
+            _lowerInclusive = false;
             return this;
         }
 
         public RangePropertyValidator<TContext> UpperInclusive()
         {
-            _rangeRequirements.UpperInclusive = true;
+            _upperInclusive = true;
             return this;
         }
 
         public RangePropertyValidator<TContext> UpperExclusive()
         {
-            _rangeRequirements.UpperInclusive = false;
+            _upperInclusive = false;
             return this;
         }
 
         public RangePropertyValidator<TContext> Severity(ValidationResultSeverity severity)
         {
-            _rangeRequirements.Severity = severity;
+            _severity = severity;
             return this;
         }
     }

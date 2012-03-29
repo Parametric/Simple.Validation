@@ -6,88 +6,35 @@ namespace Simple.Validation
 {
     public static class Expressions
     {
-        public static MemberExpression GetMemberExpression<T>(Expression<Func<T, IComparable>> propertyExpression, bool throwError = true)
+        public static MemberExpression GetMemberExpression(LambdaExpression expression, bool throwError = true)
         {
-            MemberExpression memberExpression = null;
-            if (propertyExpression.Body is MemberExpression)
+            MemberExpression result = null;
+            if (expression.Body is MemberExpression)
             {
-                memberExpression = (MemberExpression)propertyExpression.Body;
+                result = (MemberExpression)expression.Body;
             }
-            else if (propertyExpression.Body is UnaryExpression)
+            else if (expression.Body is UnaryExpression)
             {
-                var unaryExpression = propertyExpression.Body as UnaryExpression;
+                var unaryExpression = (UnaryExpression)expression.Body ;
                 var operand = unaryExpression.Operand;
-                if (operand is MemberExpression)
-                {
-                    memberExpression = (MemberExpression)operand;
-                }
+                result = operand as MemberExpression;                    
             }
-            else if (throwError)
-            {
+
+            if (result == null && throwError)
                 throw new ArgumentException("Could not convert expression to MemberExpression.");
-            }
 
-            return memberExpression;
+            return result;
         }
 
-        public static MemberExpression GetMemberExpression<TContext, TProperty>(Expression<Func<TContext, TProperty>> propertyExpression, bool throwError = true)
+        public static PropertyInfo GetPropertyInfoFromExpression(LambdaExpression propertyExpression)
         {
-            MemberExpression memberExpression = null;
-            if (propertyExpression.Body is MemberExpression)
-            {
-                memberExpression = (MemberExpression)propertyExpression.Body;
-            }
-            else if (propertyExpression.Body is UnaryExpression)
-            {
-                var unaryExpression = propertyExpression.Body as UnaryExpression;
-                var operand = unaryExpression.Operand;
-                if (operand is MemberExpression)
-                {
-                    memberExpression = (MemberExpression)operand;
-                }
-            }
-            else if (throwError)
-            {
-                throw new ArgumentException("Could not convert expression to MemberExpression.");
-            }
-
-            return memberExpression;
-        }
-
-        public static PropertyInfo GetPropertyInfoFromExpression<T>(Expression<Func<T, IComparable>> propertyExpression)
-        {
-            var memberExpression = Expressions.GetMemberExpression(propertyExpression);
+            var memberExpression = GetMemberExpression(propertyExpression);
 
             var propertyInfo = memberExpression.Member as PropertyInfo;
             if (propertyInfo == null)
-            {
                 throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
-            }
             return propertyInfo;
         }
 
-        public static PropertyInfo GetPropertyInfoFromExpression<T>(Expression<Func<T, string>> propertyExpression)
-        {
-            var memberExpression = Expressions.GetMemberExpression(propertyExpression);
-
-            var propertyInfo = memberExpression.Member as PropertyInfo;
-            if (propertyInfo == null)
-            {
-                throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
-            }
-            return propertyInfo;
-        }
-
-        public static PropertyInfo GetPropertyInfoFromExpression<T>(Expression<Func<T, object>> propertyExpression)
-        {
-            var memberExpression = Expressions.GetMemberExpression(propertyExpression);
-
-            var propertyInfo = memberExpression.Member as PropertyInfo;
-            if (propertyInfo == null)
-            {
-                throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
-            }
-            return propertyInfo;
-        }
     }
 }

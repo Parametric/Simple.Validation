@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Simple.Validation.Validators
 {
-    public class ReferencePropertyValidator<T> : PropertyValidatorBase<T>, IValidator<T>
+    public class ReferencePropertyValidator<T> : PropertyValidatorBase<T> //, IValidator<T>
     {
        // private readonly ReferencePropertyRequirements _referencePropertyRequirements;
         protected bool _required;
@@ -17,7 +17,7 @@ namespace Simple.Validation.Validators
         private object _type;
         protected string[] RulesSets { get; set; }
 
-        public bool AppliesTo(string rulesSet)
+        public override bool AppliesTo(string rulesSet)
         {
             return true;
         }
@@ -81,11 +81,11 @@ namespace Simple.Validation.Validators
             return this;
         } 
 
-        public IEnumerable<ValidationResult> Validate(T value)
+        public override IEnumerable<ValidationResult> Validate(T value)
         {
             var results = new List<ValidationResult>();
 
-            var propertyValue = PropertyExpression.Compile().Invoke(value);
+            var propertyValue = base.GetPropertyValue<object>(value);
             CheckRequired(value, results, propertyValue);
 
             if (_cascade && propertyValue !=null)
@@ -131,6 +131,7 @@ namespace Simple.Validation.Validators
 
         public ReferencePropertyValidator(Expression<Func<T, object>> propertyExpression) : base(propertyExpression)
         {
+            Severity(ValidationResultSeverity.Error);
         }
     }
 }
