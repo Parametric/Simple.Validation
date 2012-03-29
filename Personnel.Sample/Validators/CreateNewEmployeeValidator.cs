@@ -1,50 +1,51 @@
 using System.Collections.Generic;
 using System.Linq;
 using Simple.Validation;
+using Simple.Validation.Validators;
 
 namespace Personnel.Sample.Validators
 {
-    public class CreateNewEmployeeValidator : IValidator<Employee>
+    public class CreateNewEmployeeValidator : CompositeValidator<Employee>
     {
-        public bool AppliesTo(string rulesSet)
+        public override bool AppliesTo(string rulesSet)
         {
             return rulesSet == EmployeeOperations.CreateNewEmployee;
         }
 
-        public IEnumerable<ValidationResult> Validate(Employee value)
+        protected override IEnumerable<IValidator<Employee>> GetInternalValidators()
         {
-            var firstNameResults = Properties<Employee>
+            yield return Properties<Employee>
                 .For(e => e.FirstName)
                 .Length(3, 50)
                 .Required()
-                .IgnoreWhiteSpace()
-                .Validate(value);
+                .IgnoreWhiteSpace();
 
-            var lastNameResults = Properties<Employee>
+            yield return Properties<Employee>
                 .For(e => e.LastName)
                 .Length(3, 50)
                 .Required()
                 .IgnoreWhiteSpace()
-                .Validate(value);
+                ;
 
-            var ageResults = Properties<Employee>
+            yield return Properties<Employee>
                 .For(e => e.Age)
                 .MinValue(18)
                 .MaxValue(35)
-                .Validate(value);
+                ;
 
-            var addressResults = Properties<Employee>
+            yield return Properties<Employee>
                 .For(e => e.Address)
                 .Required()
                 .Cascade("Save")
-                .Validate(value)
                 ;
 
-            return firstNameResults
-                .Concat(lastNameResults)
-                .Concat(ageResults)
-                .Concat(addressResults)
-                ;
+            yield return Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Required()
+                .Size(1)
+                .Unique<ContactInfo>(c => c.Type)
+                .Cascade("Save");
+
         }
     }
 }

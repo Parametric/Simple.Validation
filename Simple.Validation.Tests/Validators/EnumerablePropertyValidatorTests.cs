@@ -4,6 +4,7 @@ using FizzWare.NBuilder;
 using NUnit.Framework;
 using Personnel.Sample;
 using Personnel.Sample.Comparers;
+using Personnel.Sample.Validators;
 
 namespace Simple.Validation.Tests.Validators
 {
@@ -11,7 +12,7 @@ namespace Simple.Validation.Tests.Validators
     public class EnumerablePropertyValidatorTests
     {
         [Test]
-        public void Requried()
+        public void Required()
         {
             // Arrange
             var validator = Properties<Employee>
@@ -513,5 +514,74 @@ namespace Simple.Validation.Tests.Validators
         }
 
 
+        [Test]
+        public void Cascade_ValidValues()
+        {
+            // Arrange
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
+            Validator.SetValidatorProvider(validatorProvider);
+
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Cascade("Save")
+                ;
+
+            // Act
+            var contactInfo = Builder<ContactInfo>
+                .CreateListOfSize(2)
+                .All().Do(c => c.Type = "Email")
+                .Build();
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = contactInfo,
+            }).ToList();
+
+            // Assert
+            Assert.That(results, Is.Empty);
+        }
+
+        [Test]
+        public void Cascade_InValidValues()
+        {
+            // Arrange
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
+            Validator.SetValidatorProvider(validatorProvider);
+
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Cascade("Save")
+                ;
+
+            // Act
+            var contactInfo = Builder<ContactInfo>
+                .CreateListOfSize(2)
+                .All().Do(c =>
+                              {
+                                  c.Type = "Email";
+                                  c.Text = string.Empty;
+                              })
+                .Build();
+            var employee = new Employee()
+                               {
+                                   ContactInfo = contactInfo,
+                               };
+            var results = validator.Validate(employee).ToList();
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+            for (var i = 0; i < contactInfo.Count; i++)
+            {
+                var expectedPropertyName = string.Format("ContactInfo[{0}].Text", i);
+                var expectedResults = results.Where(vr => vr.PropertyName == expectedPropertyName).ToList();
+                Assert.That(expectedResults, Is.Not.Empty);
+
+                foreach (var expectedResult in expectedResults)
+                {
+                    Assert.That(expectedResult.Context == employee);
+                }
+            }
+        }
     }
 }

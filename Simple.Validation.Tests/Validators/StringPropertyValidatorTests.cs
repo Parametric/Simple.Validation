@@ -265,5 +265,52 @@ namespace Simple.Validation.Tests.Validators
             Assert.That(results, Is.Not.Empty);
             Assert.That(results.First().Severity, Is.EqualTo(ValidationResultSeverity.Warning));
         }
+
+        [Test]
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void IsTrue(bool result, bool isValid)
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.FirstName)
+                .IsTrue(_ => result);
+
+            // Act
+            var results = validator.Validate(new Employee()
+                                                 {
+                                                     FirstName = "Some Non-null value"
+                                                 });
+
+            // Assert
+            if (isValid)
+                Assert.That(results, Is.Empty);
+            else
+                Assert.That(results, Is.Not.Empty);
+        }
+
+        [Test]
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public void IsFalse(bool result, bool isValid)
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.FirstName)
+                .IsFalse(_ => result);
+
+            // Act
+            var results = validator.Validate(new Employee()
+                                                 {
+                                                     FirstName = "Some non-null value"
+                                                 });
+
+            // Assert
+            if (isValid)
+                Assert.That(results, Is.Empty);
+            else
+                Assert.That(results, Is.Not.Empty);
+        }
+
     }
 }

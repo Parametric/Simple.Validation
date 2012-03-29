@@ -17,6 +17,8 @@ namespace Simple.Validation.Validators
         private int? _maxLength;
         private string _regularExpression;
         private Regex _regex;
+        private Func<string, bool> _isTruePredicate;
+        private Func<string, bool> _isFalsePredicate;
 
         public override bool AppliesTo(string rulesSet)
         {
@@ -58,49 +60,43 @@ namespace Simple.Validation.Validators
             var valueToValidate = GetValueToValidate(value);
 
             if (_required && string.IsNullOrWhiteSpace(valueToValidate))
-                yield return new ValidationResult()
-                {
-                    Context = context,
-                    Message = message,
-                    PropertyName = PropertyInfo.Name,
-                    Type = TextValidationResultType.RequiredValueNotFound,
-                    Severity = _severity,
-                };
+                yield return NewValidationResult(context, message, TextValidationResultType.RequiredValueNotFound);
 
-            if (value == null)
+            if (valueToValidate == null)
                 yield break;
 
             if (_minLength.HasValue && valueToValidate.Length < _minLength)
-                yield return new ValidationResult()
-                {
-                    Context = context,
-                    Message = message,
-                    PropertyName = PropertyInfo.Name,
-                    Type = TextValidationResultType.TextLengthOutOfRange,
-                };
+                yield return NewValidationResult(context, message, TextValidationResultType.TextLengthOutOfRange);
 
             if (_maxLength.HasValue && valueToValidate.Length > _maxLength)
-                yield return new ValidationResult()
-                {
-                    Context = context,
-                    Message = message,
-                    PropertyName = PropertyInfo.Name,
-                    Type = TextValidationResultType.TextLengthOutOfRange,
-                };
+                yield return NewValidationResult(context, message, TextValidationResultType.TextLengthOutOfRange);
 
             if (!string.IsNullOrWhiteSpace(_regularExpression))
             {
                 if (!IsRegExMatch(valueToValidate))
                 {
-                    yield return new ValidationResult()
-                    {
-                        Context = context,
-                        Message = message,
-                        PropertyName = PropertyInfo.Name,
-                        Type = TextValidationResultType.RegularExpressionMismatch,
-                    };
+                    yield return
+                        NewValidationResult(context, message, TextValidationResultType.RegularExpressionMismatch);
                 }
             }
+
+            if (_isTruePredicate != null && !_isTruePredicate(valueToValidate))
+                yield return NewValidationResult(context, message, null);
+
+            if (_isFalsePredicate != null && _isFalsePredicate(valueToValidate))
+                yield return NewValidationResult(context, message, null);
+        }
+
+        private ValidationResult NewValidationResult(object context, string message, object type)
+        {
+            return new ValidationResult()
+                       {
+                           Context = context,
+                           Message = message,
+                           PropertyName = PropertyInfo.Name,
+                           Type = type,
+                           Severity = _severity,
+                       };
         }
 
         private bool IsRegExMatch(string value)
@@ -153,6 +149,18 @@ namespace Simple.Validation.Validators
         public StringPropertyValidator<T> Severity(ValidationResultSeverity validationResultSeverity)
         {
             this._severity = validationResultSeverity;
+            return this;
+        }
+
+        public StringPropertyValidator<T> IsTrue(Func<string, bool> predicate)
+        {
+            _isTruePredicate = predicate;
+            return this;
+        }
+
+        public StringPropertyValidator<T> IsFalse(Func<string, bool> predicate)
+        {
+            _isFalsePredicate = predicate;
             return this;
         }
     }
