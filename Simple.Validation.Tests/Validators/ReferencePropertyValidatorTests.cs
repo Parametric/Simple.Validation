@@ -163,6 +163,31 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
+        public void WhenNotRequired_AndCascading_AndPropertyIsEmpty_ShouldSucceed()
+        {
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new SaveAddressValidator());
+            Validator.SetValidatorProvider(validatorProvider);
+
+            var validator = Properties<Employee>
+                .For(e => e.Address)
+                .NotRequired()
+                .Cascade("Save")
+                ;
+
+            // Act
+            var employee = new Employee()
+            {
+                ReportsTo = new Manager(),
+                Address = null
+            };
+            var results = validator.Validate(employee);
+
+            // Assert
+            Assert.That(results, Is.Empty);
+        }
+        
+        [Test]
         public void WhenCascading_Message_DoesNotOverrideMessagesFromPropertyValidation()
         {
             var validatorProvider = new DefaultValidatorProvider();
