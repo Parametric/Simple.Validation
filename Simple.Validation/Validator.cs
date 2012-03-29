@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 
 namespace Simple.Validation
 {
@@ -22,6 +24,26 @@ namespace Simple.Validation
 
             _validatorProvider = validatorProvider;
         }
+
+        private static readonly MethodInfo GenericValidateMethodInfo = typeof(Validator)
+            .GetMethods(BindingFlags.Public | BindingFlags.Static)
+            .Where(m => m.IsGenericMethod)
+            .First(m => m.Name == "Validate");
+
+        public static IEnumerable<ValidationResult> Validate(Type validatorType, object value, params string[] rulesSets)
+        {
+            if (!validatorType.IsInstanceOfType(value))
+            {
+                var msg = string.Format("Parameter 'value' must be convertable to '{0}'", validatorType);
+                throw new ArgumentOutOfRangeException(msg);
+            }
+
+            var genericMethod = GenericValidateMethodInfo.MakeGenericMethod(validatorType);
+            var methodParameters = new[] {value, rulesSets};
+            var objResults = genericMethod.Invoke(null, methodParameters);
+            var results = objResults as IEnumerable<ValidationResult>;
+            return results;
+        } 
 
         public static IEnumerable<ValidationResult> Validate<T>(T value, params string[] rulesSets)
         {

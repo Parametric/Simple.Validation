@@ -2,31 +2,37 @@
 using System.Linq;
 using Simple.Validation;
 
-namespace Personnel.Sample
+namespace Personnel.Sample.Validators
 {
-    public class RulesSetEmployeeValidator : RulesSetValidatorBase<Employee>
+    public class EmployeeInterfaceValidator : IValidator<IEmployee>
     {
-        public override IEnumerable<ValidationResult> Validate(Employee value)
+        public bool AppliesTo(string rulesSet)
         {
-            var firstNameResults = Properties<Employee>
+            return rulesSet == EmployeeOperations.CreateNewEmployee;
+        }
+
+        public IEnumerable<ValidationResult> Validate(IEmployee value)
+        {
+            var firstNameResults = Properties<IEmployee>
                 .For(e => e.FirstName)
                 .Length(3, 50)
                 .Required()
                 .IgnoreWhiteSpace()
                 .Validate(value);
 
-            var lastNameResults = Properties<Employee>
+            var lastNameResults = Properties<IEmployee>
                 .For(e => e.LastName)
                 .Length(3, 50)
                 .Required()
                 .IgnoreWhiteSpace()
                 .Validate(value);
 
-            var ageResults = Properties<Employee>
+            var ageResults = Properties<IEmployee>
                 .For(e => e.Age)
                 .MinValue(18)
                 .MaxValue(35)
                 .Validate(value);
+
 
             return firstNameResults
                 .Concat(lastNameResults)

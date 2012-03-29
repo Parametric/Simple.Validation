@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using Personnel.Sample;
-using Simple.Validation.Tests.TestDomain;
 
 namespace Simple.Validation.Tests.Validators
 {
@@ -88,6 +88,23 @@ namespace Simple.Validation.Tests.Validators
             {
                 results.AssertInvalidFor(propertyName, type);
             }
+        }
+
+        [Test]
+        public void Severity()
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.Age)
+                .GreaterThan(0)
+                .Severity(ValidationResultSeverity.Warning);
+
+            // Act
+            var results = validator.Validate(new Employee());
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+            Assert.That(results.First().Severity, Is.EqualTo(ValidationResultSeverity.Warning));
         }
 
     }

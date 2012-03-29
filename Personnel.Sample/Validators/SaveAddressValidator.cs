@@ -1,26 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Simple.Validation;
+using Simple.Validation.Validators;
 
-namespace Personnel.Sample
+namespace Personnel.Sample.Validators
 {
-    public class SaveAddressValidator : IValidator<Address>
+    public class SaveAddressValidator : CompositeValidator<Address>
     {
-        public bool AppliesTo(string rulesSet)
+        public override bool AppliesTo(string rulesSet)
         {
             return rulesSet == "Save";
         }
 
-        public IEnumerable<ValidationResult> Validate(Address value)
-        {
-            var propertyValidators = GetPropertyValidators();
-            var results = propertyValidators.SelectMany(v => v.Validate(value));
-            return results;
-        }
-
-        private IEnumerable<IValidator<Address>> GetPropertyValidators()
+        protected override IEnumerable<IValidator<Address>> GetInternalValidators()
         {
             yield return Properties<Address>.
                 For(a => a.Line1)

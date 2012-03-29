@@ -19,8 +19,32 @@ namespace Simple.Validation.Validators
         public IEnumerable<ValidationResult> Validate(TContext value)
         {
             var propertyValue = _propertyExpression.Compile().Invoke(value);
-            return RangeValidator.Validate(_rangeRequirements, propertyValue, _propertyName, value, _message);
+            return Validate(_rangeRequirements, propertyValue, _propertyName, value, _message);
         }
+
+        private IEnumerable<ValidationResult> Validate(RangeRequirements requirements, IComparable valueToValidate, string propertyName, object context = null, string message = "")
+        {
+            if (!requirements.IsValidMin(valueToValidate))
+                yield return new ValidationResult()
+                {
+                    Context = context,
+                    Message = message,
+                    PropertyName = propertyName,
+                    Type = RangeValidationResultType.ValueOutOfRange,
+                    Severity = requirements.Severity,
+                };
+
+            if (!requirements.IsValidMax(valueToValidate))
+                yield return new ValidationResult()
+                {
+                    Context = context,
+                    Message = message,
+                    PropertyName = propertyName,
+                    Type = RangeValidationResultType.ValueOutOfRange,
+                    Severity = requirements.Severity,
+                };
+        }
+
 
         public RangePropertyValidator(Expression<Func<TContext, IComparable>> propertyExpression)
         {
@@ -95,6 +119,12 @@ namespace Simple.Validation.Validators
         public RangePropertyValidator<TContext> UpperExclusive()
         {
             _rangeRequirements.UpperInclusive = false;
+            return this;
+        }
+
+        public RangePropertyValidator<TContext> Severity(ValidationResultSeverity severity)
+        {
+            _rangeRequirements.Severity = severity;
             return this;
         }
     }

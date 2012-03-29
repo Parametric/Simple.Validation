@@ -10,10 +10,13 @@ namespace Simple.Validation.Validators
         public IComparable MaxValue { get; set; }
         public bool UpperInclusive { get; set; }
 
+        public ValidationResultSeverity Severity { get; set; }
+
         public RangeRequirements()
         {
             LowerInclusive = true;
             UpperInclusive = true;
+            Severity = ValidationResultSeverity.Error;
         }
 
         internal bool IsValidMin(IComparable valueToValidate)
@@ -45,5 +48,6 @@ namespace Simple.Validation.Validators
 
             return true;
         }
+
     }
 }

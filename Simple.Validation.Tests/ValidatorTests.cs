@@ -4,6 +4,8 @@ using System.Linq;
 using NSubstitute;
 using NSubstitute.Core;
 using NUnit.Framework;
+using Personnel.Sample;
+using Personnel.Sample.Validators;
 
 namespace Simple.Validation.Tests
 {
@@ -183,7 +185,6 @@ namespace Simple.Validation.Tests
             // Assert
         }
 
-
         [Test]
         public void When_appliesTo_is_true_then_validator_is_executed()
         {
@@ -222,6 +223,50 @@ namespace Simple.Validation.Tests
 
             // Assert
             mockValidator.DidNotReceive().Validate(objectToValidate);
+        }
+
+        [Test]
+        public void Validate_NonGeneric_SameType()
+        {
+            // Arrange
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new CreateNewEmployeeValidator());
+            validatorProvider.RegisterValidator(new SaveAddressValidator());
+
+            Validator.SetValidatorProvider(validatorProvider);
+
+            // Act
+            var results = Validator.Validate(typeof(Employee), new Employee(), EmployeeOperations.CreateNewEmployee);
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+        }
+
+        [Test]
+        public void Validate_NonGeneric_SubType()
+        {
+            // Arrange
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new EmployeeInterfaceValidator() );
+
+            Validator.SetValidatorProvider(validatorProvider);
+
+            // Act
+            var results = Validator.Validate(typeof(IEmployee), new Employee(), EmployeeOperations.CreateNewEmployee);
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+        }
+
+        [Test]
+        public void Validate_NonGeneric_TypesDontMatch()
+        {
+            // Arrange
+
+            // Act
+            Assert.Throws<ArgumentOutOfRangeException>(() => Validator.Validate(typeof(Manager), new Employee()));
+
+            // Assert
         }
 
     }

@@ -6,11 +6,16 @@ using System.Text;
 
 namespace Simple.Validation.Validators
 {
-    public class ReferencePropertyValidator<T> : IValidator<T>
+    public class ReferencePropertyValidator<T> : PropertyValidatorBase<T>, IValidator<T>
     {
-        private readonly Expression<Func<T, object>> _propertyExpression;
-        private readonly ReferencePropertyRequirements _referencePropertyRequirements;
-        private readonly string _propertyName;
+       // private readonly ReferencePropertyRequirements _referencePropertyRequirements;
+        protected bool _required;
+        protected Type PropertyType { get; set; }
+        protected bool _cascade;
+        private string _message;
+        private ValidationResultSeverity _severity = ValidationResultSeverity.Error;
+        private object _type;
+        protected string[] RulesSets { get; set; }
 
         public bool AppliesTo(string rulesSet)
         {
@@ -19,44 +24,60 @@ namespace Simple.Validation.Validators
 
         public ReferencePropertyValidator<T> Required()
         {
-            this._referencePropertyRequirements.Required = true;
+            this._required = true;
             return this;
         }
 
         public ReferencePropertyValidator<T> NotRequired()
         {
-            this._referencePropertyRequirements.Required = false;
+            this._required = false;
             return this;
         } 
 
         public ReferencePropertyValidator<T> Cascade(params string[] rulesSets)
         {
-            this._referencePropertyRequirements.Cascade = true;
-            this._referencePropertyRequirements.RulesSets = rulesSets;
+            this.PropertyType = PropertyInfo.PropertyType;
+            this._cascade = true;
+            this.RulesSets = rulesSets;
+            return this;
+        }
+
+        public ReferencePropertyValidator<T> Cascade<TPropertyType>(params string[] rulesSets)
+        {
+            if (!typeof(TPropertyType).IsAssignableFrom(PropertyInfo.PropertyType))
+            {
+                var msg = string.Format("PropertyType from property expression '{0}' must be convertible to '{1}'", 
+                    PropertyInfo.PropertyType, typeof(TPropertyType).FullName);
+                throw new ArgumentOutOfRangeException(msg);
+            }
+
+            this.PropertyType = typeof (TPropertyType);
+            this._cascade = true;
+            this.RulesSets = rulesSets;
             return this;
         }
 
         public ReferencePropertyValidator<T> DoNotCascade()
         {
-            this._referencePropertyRequirements.Cascade = false;
+            this._cascade = false;
             return this;
         }
 
         public ReferencePropertyValidator<T> Message(string format, params object[] arguments)
         {
-            _referencePropertyRequirements.Message = string.Format(format, arguments);
+            _message = string.Format(format, arguments);
             return this;
         }
 
         public ReferencePropertyValidator<T> Severity(ValidationResultSeverity severity)
         {
-            _referencePropertyRequirements.Severity = severity;
+            _severity = severity;
             return this;
         } 
 
         public ReferencePropertyValidator<T> Type(object type)
         {
-            _referencePropertyRequirements.Type = type;
+            _type = type;
             return this;
         } 
 
@@ -64,54 +85,52 @@ namespace Simple.Validation.Validators
         {
             var results = new List<ValidationResult>();
 
-            var propertyValue = _propertyExpression.Compile().Invoke(value);
+            var propertyValue = PropertyExpression.Compile().Invoke(value);
             CheckRequired(value, results, propertyValue);
 
-            if (_referencePropertyRequirements.Cascade)
-                PerformCascadeValidate(results, propertyValue);
+            if (_cascade && propertyValue !=null)
+                PerformCascadeValidate(value, results, propertyValue);
 
             return results;
         }
 
-        private void PerformCascadeValidate(List<ValidationResult> results, object propertyValue)
+        private void PerformCascadeValidate(T valueBeingValidated, List<ValidationResult> results, object propertyValue)
         {
             var delegateResults = Validator
-                .Validate(propertyValue, _referencePropertyRequirements.RulesSets)
+                .Validate(this.PropertyType, propertyValue, this.RulesSets)
                 .ToList();
             delegateResults
                 .ToList()
-                .ForEach(UpdateValidationResultPropertyName);
+                .ForEach(vr =>
+                             {
+                                 UpdatePropertyName(vr);
+                                 vr.Context = valueBeingValidated;
+                             });
             results.AddRange(delegateResults);
         }
 
-        private void UpdateValidationResultPropertyName(ValidationResult vr)
+        private void UpdatePropertyName(ValidationResult vr)
         {
             vr.PropertyName = !string.IsNullOrWhiteSpace(vr.PropertyName) ? 
-                string.Format("{0}.{1}", _propertyName, vr.PropertyName) : 
-                _propertyName;
+                string.Format("{0}.{1}", PropertyInfo.Name, vr.PropertyName) : 
+                PropertyInfo.Name;
         }
 
-        private void CheckRequired(T value, List<ValidationResult> results, object propertyValue)
+        private void CheckRequired(T value, ICollection<ValidationResult> results, object propertyValue)
         {
-            if (_referencePropertyRequirements.Required && propertyValue == null)
+            if (_required && propertyValue == null)
                 results.Add(new ValidationResult()
                                 {
                                     Context = value,
-                                    Message = _referencePropertyRequirements.Message,
-                                    PropertyName = _propertyName,
-                                    Severity = _referencePropertyRequirements.Severity,
-                                    Type = _referencePropertyRequirements.Type,
+                                    Message = _message,
+                                    PropertyName = PropertyInfo.Name,
+                                    Severity = _severity,
+                                    Type = _type,
                                 });
         }
 
-        public ReferencePropertyValidator(Expression<Func<T, object>> propertyExpression)
+        public ReferencePropertyValidator(Expression<Func<T, object>> propertyExpression) : base(propertyExpression)
         {
-            _propertyExpression = propertyExpression;
-            this._referencePropertyRequirements = new ReferencePropertyRequirements();
-
-            var propertyInfo = Expressions.GetPropertyInfoFromExpression(propertyExpression);
-
-            _propertyName = propertyInfo.Name;
         }
     }
 }

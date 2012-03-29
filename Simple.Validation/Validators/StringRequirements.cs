@@ -27,6 +27,7 @@ namespace Simple.Validation.Validators
         }
 
         private Regex _regex;
+        public ValidationResultSeverity Severity { get; set; }
 
         public bool IsRegExMatch(string value)
         {
@@ -47,6 +48,11 @@ namespace Simple.Validation.Validators
 
             return value;
 
+        }
+
+        public StringRequirements()
+        {
+            Severity = ValidationResultSeverity.Error;
         }
     }
 }

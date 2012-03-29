@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Simple.Validation;
 
-namespace Personnel.Sample
+namespace Personnel.Sample.Validators
 {
     public class CreateNewEmployeeValidator : IValidator<Employee>
     {
@@ -33,9 +33,17 @@ namespace Personnel.Sample
                 .MaxValue(35)
                 .Validate(value);
 
+            var addressResults = Properties<Employee>
+                .For(e => e.Address)
+                .Required()
+                .Cascade("Save")
+                .Validate(value)
+                ;
+
             return firstNameResults
                 .Concat(lastNameResults)
                 .Concat(ageResults)
+                .Concat(addressResults)
                 ;
         }
     }

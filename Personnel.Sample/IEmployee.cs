@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Simple.Validation.Tests.TestDomain
+namespace Personnel.Sample
 {
     public interface IEmployee
     {

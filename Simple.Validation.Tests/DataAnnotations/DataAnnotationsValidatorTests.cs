@@ -3,7 +3,6 @@ using System.Linq;
 using NUnit.Framework;
 using Personnel.Sample;
 using Simple.Validation.DataAnnotations;
-using Simple.Validation.Tests.TestDomain;
 
 namespace Simple.Validation.Tests.DataAnnotations
 {

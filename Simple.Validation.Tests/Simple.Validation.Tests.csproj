@@ -60,15 +60,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Validators\ChildPropertyValidatorTests.cs" />
+    <Compile Include="Validators\ReferencePropertyValidatorTests.cs" />
     <Compile Include="Validators\RangePropertyValidatorTests.cs" />
     <Compile Include="DataAnnotations\DataAnnotationsValidatorTests.cs" />
     <Compile Include="Validators\StringPropertyValidatorTests.cs" />
     <Compile Include="DefaultValidatorProviderTests.cs" />
     <Compile Include="Validators\DefaultValidatorBaseTests.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="Validators\RangeValidatorTests.cs" />
-    <Compile Include="Validators\StringValidatorTests.cs" />
     <Compile Include="ValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

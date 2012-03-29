@@ -12,10 +12,11 @@ namespace Simple.Validation.Tests
             Assert.That(result, Is.Null);
         }
 
-        public static void AssertInvalidFor(this IEnumerable<ValidationResult> self, string propertyName, object type)
+        public static void AssertInvalidFor(this IEnumerable<ValidationResult> self, string propertyName, object type, ValidationResultSeverity severity = ValidationResultSeverity.Error)
         {
             var result = GetValidationResult(self, propertyName, type);
             Assert.That(result, Is.Not.Null);
+            Assert.That(result.Severity, Is.EqualTo(severity));
         }
 
         private static ValidationResult GetValidationResult(IEnumerable<ValidationResult> self, string propertyName, object type)

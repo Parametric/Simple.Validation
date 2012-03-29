@@ -1,4 +1,4 @@
-namespace Simple.Validation.Tests.TestDomain
+namespace Personnel.Sample
 {
     public class EmployeeWithoutDataAnnotations : IEmployee
     {
