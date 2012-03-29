@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Validators\EnumerablePropertyValidatorTests.cs" />
     <Compile Include="Validators\ReferencePropertyValidatorTests.cs" />
     <Compile Include="Validators\RangePropertyValidatorTests.cs" />
     <Compile Include="DataAnnotations\DataAnnotationsValidatorTests.cs" />

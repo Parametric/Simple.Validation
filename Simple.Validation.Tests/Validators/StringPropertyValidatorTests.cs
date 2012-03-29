@@ -27,8 +27,8 @@ namespace Simple.Validation.Tests.Validators
             if (actualLength.HasValue)
                 employee.LastName = new string('x', actualLength.Value);
 
-            var validator = Properties
-                .For<Employee>(e => e.LastName)
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
                 .Length(minLength);
 
             // Act
@@ -51,8 +51,8 @@ namespace Simple.Validation.Tests.Validators
             // Arrange
             var employee = new Employee {LastName = "ABC  "};
 
-            var validator = Properties
-                .For<Employee>(e => e.LastName)
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
                 .Length(5)
                 .IgnoreWhiteSpace()
                 ;
@@ -86,8 +86,8 @@ namespace Simple.Validation.Tests.Validators
             if (actualLength.HasValue)
                 employee.LastName = new string('x', actualLength.Value);
 
-            var validator = Properties
-                .For<Employee>(e => e.LastName)
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
                 .Length(null, maxLength);
 
             // Act
@@ -110,8 +110,8 @@ namespace Simple.Validation.Tests.Validators
             // Arrange
             var employee = new Employee { LastName = "ABCD  " };
 
-            var validator = Properties
-                .For<Employee>(e => e.LastName)
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
                 .Length(null, 3)
                 .IgnoreWhiteSpace()
                 ;
@@ -140,8 +140,8 @@ namespace Simple.Validation.Tests.Validators
         {
             // Arrange
             var employee = new Employee();
-            var validator = Properties
-                .For<Employee>(e => e.LastName)
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
                 ;
 
             if (required)
@@ -171,8 +171,8 @@ namespace Simple.Validation.Tests.Validators
         {
             // Arrange
             var employee = new Employee();
-            var validator = Properties
-                .For<Employee>(e => e.LastName)
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
                 .Required()
                 .IgnoreWhiteSpace()
                 ;
@@ -199,8 +199,8 @@ namespace Simple.Validation.Tests.Validators
                                {
                                    LastName = value
                                };
-            var validator = Properties
-                .For<Employee>(e => e.LastName)
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
                 .Matches(regularExpression)
                 ;
 
@@ -230,8 +230,8 @@ namespace Simple.Validation.Tests.Validators
             {
                 LastName = value
             };
-            var validator = Properties
-                .For<Employee>(e => e.LastName)
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
                 .Matches(regularExpression, options)
                 ;
 

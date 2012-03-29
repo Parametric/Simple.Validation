@@ -48,6 +48,7 @@
     <Compile Include="Expressions.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Validators\CompositeValidator.cs" />
+    <Compile Include="Validators\EnumerablePropertyValidator.cs" />
     <Compile Include="Validators\PropertyValidatorBase.cs" />
     <Compile Include="Validators\RangePropertyValidator.cs" />
     <Compile Include="RulesSetValidatorBase.cs" />
