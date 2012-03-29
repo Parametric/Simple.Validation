@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Simple.Validation;
 
-namespace Simple.Validation.Tests.TestDomain
+namespace Personnel.Sample
 {
     public class RulesSetEmployeeValidator : RulesSetValidatorBase<Employee>
     {

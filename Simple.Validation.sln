@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{30F1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanApplicationSample", "LoanApplicationSample\LoanApplicationSample.csproj", "{C192DB8E-55EC-4F53-A2DD-8D9A1E54702E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Personnel.Sample", "Personnel.Sample\Personnel.Sample.csproj", "{64CB1A9F-F147-4B27-8F60-59F014736F5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{C192DB8E-55EC-4F53-A2DD-8D9A1E54702E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C192DB8E-55EC-4F53-A2DD-8D9A1E54702E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C192DB8E-55EC-4F53-A2DD-8D9A1E54702E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64CB1A9F-F147-4B27-8F60-59F014736F5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64CB1A9F-F147-4B27-8F60-59F014736F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64CB1A9F-F147-4B27-8F60-59F014736F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64CB1A9F-F147-4B27-8F60-59F014736F5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,5 +76,6 @@ Global
 		{D74F0584-2F85-46A8-BB11-978C2B5C1721} = {D029A35A-F9C5-4345-AAC2-28AF0DC10B11}
 		{2B2AF60A-676F-454E-B495-44B38B276DDD} = {882E86DA-1AB8-47AA-B333-B243B834C8FD}
 		{C192DB8E-55EC-4F53-A2DD-8D9A1E54702E} = {30F1047C-1844-4B73-8B56-81A9A8265B87}
+		{64CB1A9F-F147-4B27-8F60-59F014736F5A} = {30F1047C-1844-4B73-8B56-81A9A8265B87}
 	EndGlobalSection
 EndGlobal
