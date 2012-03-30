@@ -36,7 +36,7 @@ namespace Personnel.Sample.Validators
 
         public RulesSetEmployeeValidator()
         {
-            RulesSets = new[]{EmployeeOperations.CreateNewEmployee};
+            RulesSets = new[]{Sample.RulesSets.Crud.Save};
         }
     }
 }

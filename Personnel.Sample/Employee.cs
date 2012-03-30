@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Personnel.Sample
 {
     public class Employee : IEmployee
     {
+        public int EmployeeId { get; set; }
+
         [Required]
         [StringLength(50, MinimumLength = 2)]
         public string FirstName { get; set; }
@@ -23,5 +26,6 @@ namespace Personnel.Sample
         public Address Address { get; set; }
 
         public IList<ContactInfo> ContactInfo { get; set; }
+
     }
 }

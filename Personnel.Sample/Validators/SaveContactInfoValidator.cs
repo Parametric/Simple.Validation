@@ -14,7 +14,7 @@ namespace Personnel.Sample.Validators
 
         public override bool AppliesTo(string rulesSet)
         {
-            return rulesSet == "Save";
+            return rulesSet == RulesSets.Crud.Save;
         }
 
         protected override IEnumerable<IValidator<ContactInfo>> GetInternalValidators()

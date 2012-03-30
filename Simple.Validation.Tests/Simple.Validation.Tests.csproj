@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Comparers\PredicateEqualityComparerTests.cs" />
     <Compile Include="Comparers\SelectorEqualityComparerTests.cs" />
+    <Compile Include="Validators\AncestorTypeValidatorTests.cs" />
     <Compile Include="Validators\EnumerablePropertyValidatorTests.cs" />
     <Compile Include="Validators\ReferencePropertyValidatorTests.cs" />
     <Compile Include="Validators\RangePropertyValidatorTests.cs" />

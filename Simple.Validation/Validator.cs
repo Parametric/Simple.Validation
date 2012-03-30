@@ -49,8 +49,10 @@ namespace Simple.Validation
             if (rulesSets == null || !rulesSets.Any())
                 rulesSets = new[]{""};
 
+            var allValidators = ValidatorProvider.GetValidators<T>();
+
             var validators = 
-                    from validator in ValidatorProvider.GetValidators<T>()
+                    from validator in allValidators
                     from rulesSet in rulesSets
                     where validator.AppliesTo(rulesSet)
                     select validator;

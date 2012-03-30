@@ -229,13 +229,13 @@ namespace Simple.Validation.Tests
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new CreateNewEmployeeValidator());
+            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
             validatorProvider.RegisterValidator(new SaveAddressValidator());
 
             Validator.SetValidatorProvider(validatorProvider);
 
             // Act
-            var results = Validator.Validate(typeof(Employee), new Employee(), EmployeeOperations.CreateNewEmployee);
+            var results = Validator.Validate(typeof(Employee), new Employee(), RulesSets.Crud.Save);
 
             // Assert
             Assert.That(results, Is.Not.Empty);
@@ -251,7 +251,7 @@ namespace Simple.Validation.Tests
             Validator.SetValidatorProvider(validatorProvider);
 
             // Act
-            var results = Validator.Validate(typeof(IEmployee), new Employee(), EmployeeOperations.CreateNewEmployee);
+            var results = Validator.Validate(typeof(IEmployee), new Employee(), RulesSets.Crud.Save);
 
             // Assert
             Assert.That(results, Is.Not.Empty);

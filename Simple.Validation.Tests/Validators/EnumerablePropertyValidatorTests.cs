@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FizzWare.NBuilder;
+using LoanApplicationSample;
 using NUnit.Framework;
 using Personnel.Sample;
 using Personnel.Sample.Comparers;
@@ -98,12 +99,12 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Minimum_NotRequired_ValueNotSpecified()
+        public void Count_Minimum_NotRequired_ValueNotSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
-                .Size(1)
+                .Count(1)
                 ;
 
             // Act
@@ -117,12 +118,12 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Minimum_NotRequired_InvalidValueSpecified()
+        public void Count_Minimum_NotRequired_InvalidValueSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
-                .Size(1)
+                .Count(1)
                 ;
 
             // Act
@@ -139,13 +140,13 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Minimum_Required_InvalidValueSpecified()
+        public void Count_Minimum_Required_InvalidValueSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
                 .Required()
-                .Size(1)
+                .Count(1)
                 ;
 
             // Act
@@ -162,12 +163,12 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Minimum_NotRequired_ValidValueSpecified()
+        public void Count_Minimum_NotRequired_ValidValueSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
-                .Size(1)
+                .Count(1)
                 ;
 
             // Act
@@ -184,13 +185,13 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Minimum_Required_ValidValueSpecified()
+        public void Count_Minimum_Required_ValidValueSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
                 .Required()
-                .Size(1)
+                .Count(1)
                 ;
 
             // Act
@@ -210,12 +211,12 @@ namespace Simple.Validation.Tests.Validators
 
 
         [Test]
-        public void Size_Maximum_NotRequired_ValueNotSpecified()
+        public void Count_Maximum_NotRequired_ValueNotSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
-                .Size(1, 2)
+                .Count(1, 2)
                 ;
 
             // Act
@@ -229,12 +230,12 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Maximum_NotRequired_InvalidValueSpecified()
+        public void Count_Maximum_NotRequired_InvalidValueSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
-                .Size(1, 2)
+                .Count(1, 2)
                 ;
 
             // Act
@@ -256,13 +257,13 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Maximum_Required_InvalidValueSpecified()
+        public void Count_Maximum_Required_InvalidValueSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
                 .Required()
-                .Size(1, 2)
+                .Count(1, 2)
                 ;
 
             // Act
@@ -284,12 +285,12 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Maximum_NotRequired_ValidValueSpecified()
+        public void Count_Maximum_NotRequired_ValidValueSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
-                .Size(1, 2)
+                .Count(1, 2)
                 ;
 
             // Act
@@ -307,13 +308,13 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Size_Maximum_Required_ValidValueSpecified()
+        public void Count_Maximum_Required_ValidValueSpecified()
         {
             // Arrange
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
                 .Required()
-                .Size(1, 2)
+                .Count(1, 2)
                 ;
 
             // Act
@@ -647,6 +648,36 @@ namespace Simple.Validation.Tests.Validators
                     Assert.That(expectedResult.Context == employee);
                 }
             }
+        }
+
+
+        [Test]
+        public void CascadeOverManager_Should_SetPropertyNamesCorrectlyForAllDescendants()
+        {
+            // Arrange
+            var config = new ValidationConfiguration();
+            config.Configure();
+
+            var manager = new Manager()
+                              {
+                                  Reports = new List<Employee>()
+                                      {
+                                          new Employee
+                                              {
+                                                  ContactInfo = new[]
+                                                                    {
+                                                                        new ContactInfo(), 
+                                                                    }
+                                              },
+                                      }
+                              };
+
+            // Act
+            var results = Validator.Validate(manager, RulesSets.Crud.Save);
+
+            // Assert
+            var result = results.FirstOrDefault(vr => vr.PropertyName == "Reports[0].ContactInfo[0].Text");
+            Assert.That(result, Is.Not.Null);
         }
     }
 }

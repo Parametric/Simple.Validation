@@ -124,10 +124,10 @@ namespace Simple.Validation.Validators
             return this;
         }
 
-        public EnumerablePropertyValidator<T> Size(int? minSize, int? maxSize = null)
+        public EnumerablePropertyValidator<T> Count(int? minCount, int? maxCount = null)
         {
-            _minSize = minSize;
-            _maxSize = maxSize;
+            _minSize = minCount;
+            _maxSize = maxCount;
             return this;
         }
 

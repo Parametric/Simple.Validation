@@ -8,7 +8,7 @@ namespace Personnel.Sample.Validators
     {
         public bool AppliesTo(string rulesSet)
         {
-            return rulesSet == EmployeeOperations.CreateNewEmployee;
+            return rulesSet == RulesSets.Crud.Save;
         }
 
         public IEnumerable<ValidationResult> Validate(IEmployee value)

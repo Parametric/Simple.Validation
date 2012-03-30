@@ -4,11 +4,11 @@ using Simple.Validation.Validators;
 
 namespace Personnel.Sample.Validators
 {
-    public class CreateNewEmployeeValidator : CompositeValidator<Employee>
+    public class SaveEmployeeValidator : CompositeValidator<Employee>
     {
         public override bool AppliesTo(string rulesSet)
         {
-            return rulesSet == EmployeeOperations.CreateNewEmployee;
+            return rulesSet == RulesSets.Crud.Save;
         }
 
         protected override IEnumerable<IValidator<Employee>> GetInternalValidators()
@@ -41,7 +41,7 @@ namespace Personnel.Sample.Validators
             yield return Properties<Employee>
                 .For(e => e.ContactInfo)
                 .Required()
-                .Size(1)
+                .Count(1)
                 .Unique<ContactInfo>(c => c.Type)
                 .Cascade("Save");
 
