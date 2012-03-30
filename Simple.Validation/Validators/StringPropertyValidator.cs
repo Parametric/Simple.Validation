@@ -19,6 +19,7 @@ namespace Simple.Validation.Validators
         private Regex _regex;
         private Func<string, bool> _isTruePredicate;
         private Func<string, bool> _isFalsePredicate;
+        private object _type;
 
         public override bool AppliesTo(string rulesSet)
         {
@@ -28,12 +29,6 @@ namespace Simple.Validation.Validators
         public StringPropertyValidator(Expression<Func<T, string>> propertyExpression) : base(propertyExpression)
         {
             Severity(ValidationResultSeverity.Error);
-        }
-
-        public StringPropertyValidator<T> Message(string format, params object[] arguments)
-        {
-            _message = string.Format(format, arguments);
-            return this;
         }
 
         public override IEnumerable<ValidationResult> Validate(T value)
@@ -94,7 +89,7 @@ namespace Simple.Validation.Validators
                            Context = context,
                            Message = message,
                            PropertyName = PropertyInfo.Name,
-                           Type = type,
+                           Type = _type ?? type,
                            Severity = _severity,
                        };
         }
@@ -161,6 +156,18 @@ namespace Simple.Validation.Validators
         public StringPropertyValidator<T> IsFalse(Func<string, bool> predicate)
         {
             _isFalsePredicate = predicate;
+            return this;
+        }
+
+        public StringPropertyValidator<T> Message(string format, params object[] arguments)
+        {
+            _message = string.Format(format, arguments);
+            return this;
+        }
+
+        public StringPropertyValidator<T> Type(object type)
+        {
+            _type = type;
             return this;
         }
     }
