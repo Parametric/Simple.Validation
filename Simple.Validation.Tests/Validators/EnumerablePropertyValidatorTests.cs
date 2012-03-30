@@ -33,6 +33,71 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
+        public void Severity()
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Required()
+                .Severity(ValidationResultSeverity.Warning)
+                ;
+
+            // Act
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = null,
+            });
+
+            // Assert
+            var result = results.First(vr => vr.PropertyName == "ContactInfo");
+            Assert.That(result.Severity, Is.EqualTo(ValidationResultSeverity.Warning));
+        }
+
+        [Test]
+        public void Type()
+        {
+            // Arrange
+            const string customResultType = "MyCustomResultType";
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Required()
+                .Type(customResultType)
+                ;
+
+            // Act
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = null,
+            });
+
+            // Assert
+            var result = results.First(vr => vr.PropertyName == "ContactInfo");
+            Assert.That(result.Type, Is.EqualTo(customResultType));
+        }
+
+        [Test]
+        public void Message()
+        {
+            // Arrange
+            var message= "This is a message";
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Required()
+                .Message(message)
+                ;
+
+            // Act
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = null,
+            });
+
+            // Assert
+            var result = results.First(vr => vr.PropertyName == "ContactInfo");
+            Assert.That(result.Message, Is.EqualTo(message));
+        }
+
+        [Test]
         public void Size_Minimum_NotRequired_ValueNotSpecified()
         {
             // Arrange

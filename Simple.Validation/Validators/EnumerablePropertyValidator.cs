@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using Simple.Validation.Comparers;
 
 namespace Simple.Validation.Validators
@@ -175,6 +173,24 @@ namespace Simple.Validation.Validators
         {
             _cascade = true;
             _cascadeRulesSets = rulesSets;
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Severity(ValidationResultSeverity severity)
+        {
+            _severity = severity;
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Type(object type)
+        {
+            _type = type;
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Message(string message, params object[] parameters)
+        {
+            _message = string.Format(message, parameters);
             return this;
         }
     }

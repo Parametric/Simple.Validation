@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Simple.Validation.Validators
 {
-    public class ReferencePropertyValidator<T> : PropertyValidatorBase<T> //, IValidator<T>
+    public class ReferencePropertyValidator<T> : PropertyValidatorBase<T> 
     {
-       // private readonly ReferencePropertyRequirements _referencePropertyRequirements;
         protected bool _required;
         protected Type PropertyType { get; set; }
         protected bool _cascade;

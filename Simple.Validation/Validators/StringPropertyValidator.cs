@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Simple.Validation.Validators
 {
-    public class StringPropertyValidator<T> : PropertyValidatorBase<T> //, IValidator<T>
+    public class StringPropertyValidator<T> : PropertyValidatorBase<T> 
     {
         private string _message;
         private ValidationResultSeverity _severity;

@@ -57,7 +57,6 @@
     <Compile Include="RulesSetValidatorBase.cs" />
     <Compile Include="Validators\ReferencePropertyValidator.cs" />
     <Compile Include="Validators\StringPropertyValidator.cs" />
-    <Compile Include="Validators\TypeDelegationValidator.cs" />
     <Compile Include="DataAnnotations\DataAnnotationsValidator.cs" />
     <Compile Include="ValidationException.cs" />
     <Compile Include="ValidationResult.cs" />

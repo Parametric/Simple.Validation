@@ -1,6 +1,6 @@
-﻿using NSubstitute;
+﻿using Ninject;
+using NSubstitute;
 using NUnit.Framework;
-using Ninject;
 
 namespace Simple.Validation.Ninject.Tests
 {

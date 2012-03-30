@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Personnel.Sample;
 using Personnel.Sample.Validators;
 
 namespace Simple.Validation.Tests.Validators
