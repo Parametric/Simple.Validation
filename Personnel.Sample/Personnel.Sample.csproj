@@ -46,6 +46,9 @@
     <Compile Include="Address.cs" />
     <Compile Include="Comparers\ContactInfoTypeEqualityComparer.cs" />
     <Compile Include="ContactInfo.cs" />
+    <Compile Include="EmailAddress.cs" />
+    <Compile Include="PhoneNumber.cs" />
+    <Compile Include="Validators\EmailAddressValidator.cs" />
     <Compile Include="Validators\EmployeeInterfaceValidator.cs" />
     <Compile Include="Validators\SaveAddressValidator.cs" />
     <Compile Include="Validators\CreateNewEmployeeValidator.cs" />

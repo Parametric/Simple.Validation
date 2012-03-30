@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Simple.Validation.Validators
 {
-    public class RangePropertyValidator<TContext> : PropertyValidatorBase<TContext> //, IValidator<TContext> 
+    public class RangePropertyValidator<TContext> : PropertyValidatorBase<TContext> 
     {
         private string _message;
         private IComparable _minValue;

@@ -20,6 +20,7 @@ namespace Simple.Validation.Validators
         private IEqualityComparer<object> _uniqueComparer;
         private bool _cascade;
         private string[] _cascadeRulesSets;
+        private Type _cascadePropertyType;
 
         public EnumerablePropertyValidator(LambdaExpression propertyExpression) : base(propertyExpression)
         {
@@ -41,7 +42,9 @@ namespace Simple.Validation.Validators
             if (enumerableValue == null)
                 return results;
 
-            var size = enumerableValue.Count();
+            var materialized = enumerableValue.ToList();
+
+            var size = materialized.Count();
             if (_minSize.HasValue && _minSize > size) 
                 results.Add(NewValidationResult(value));
 
@@ -50,13 +53,13 @@ namespace Simple.Validation.Validators
 
             if (_unique)
             {
-                var uniqueValidationResult = ValidateUnique(value, enumerableValue);
+                var uniqueValidationResult = ValidateUnique(value, materialized);
                 if (uniqueValidationResult != null)
                     results.Add(uniqueValidationResult);
             }
 
             if (_cascade)
-                CascadeValidate(value, enumerableValue, results);
+                CascadeValidate(value, materialized, results);
 
             return results;
         }
@@ -67,16 +70,22 @@ namespace Simple.Validation.Validators
             for (var i = 0; i < list.Count; i++)
             {
                 var item = list[0];
-                var validatorType = item.GetType();
-                var validationResults = Validator.Validate(validatorType, item, _cascadeRulesSets).ToList();
-                var prefix = string.Format("{0}[{1}]", PropertyInfo.Name, i);
-                foreach (var validationResult in validationResults)
-                {
-                    validationResult.Context = context;
-                    validationResult.PropertyName = string.Format("{0}.{1}", prefix, validationResult.PropertyName);
-                }
+                var typeOfValidatorToUse = _cascadePropertyType ?? item.GetType();
+                var validationResults = Validator.Validate(typeOfValidatorToUse, item, _cascadeRulesSets).ToList();
+
+                SetPropertyNamePrefix(context, validationResults, i);
 
                 results.AddRange(validationResults);         
+            }
+        }
+
+        private void SetPropertyNamePrefix(T context, IEnumerable<ValidationResult> validationResults, int i)
+        {
+            var prefix = string.Format("{0}[{1}]", PropertyInfo.Name, i);
+            foreach (var validationResult in validationResults)
+            {
+                validationResult.Context = context;
+                validationResult.PropertyName = string.Format("{0}.{1}", prefix, validationResult.PropertyName);
             }
         }
 
@@ -175,6 +184,32 @@ namespace Simple.Validation.Validators
         {
             _cascade = true;
             _cascadeRulesSets = rulesSets;
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Cascade<TPropertyType>(params string[] rulesSets)
+        {
+            _cascadePropertyType = typeof (TPropertyType);
+            _cascade = true;
+            _cascadeRulesSets = rulesSets;
+            return this;
+        }
+    
+        public EnumerablePropertyValidator<T> Message(string format, params object[] arguments)
+        {
+            _message = string.Format(format, arguments);
+            return this;
+        } 
+
+        public EnumerablePropertyValidator<T> Severity(ValidationResultSeverity severity)
+        {
+            _severity = severity;
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Type(object customType)
+        {
+            _type = customType;
             return this;
         }
     }

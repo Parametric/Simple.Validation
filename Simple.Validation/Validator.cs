@@ -47,12 +47,11 @@ namespace Simple.Validation
 
         public static IEnumerable<ValidationResult> Validate<T>(T value, params string[] rulesSets)
         {
-            if (rulesSets == null || !rulesSets.Any())
-                rulesSets = new[]{""};
+            var normalized = GetNormalizedRulesSets<T>(rulesSets);
 
             var validators = 
                     from validator in ValidatorProvider.GetValidators<T>()
-                    from rulesSet in rulesSets
+                    from rulesSet in normalized
                     where validator.AppliesTo(rulesSet)
                     select validator;
 
@@ -63,11 +62,20 @@ namespace Simple.Validation
             return validationResults;
         }
 
+        private static IEnumerable<string> GetNormalizedRulesSets<T>(string[] rulesSets)
+        {
+            if (rulesSets == null || !rulesSets.Any())
+                rulesSets = new[] {""};
+
+            var normalizedRulesSets = rulesSets;
+            return normalizedRulesSets;
+        }
+
         public static IEnumerable<ValidationResult> Enforce<T>(T value, params string[] rulesSets)
         {
-            var results = Validate(value, rulesSets);
+            var results = Validate(value, rulesSets).ToArray();
             if (results.HasErrors())
-                throw new ValidationException(results.ToArray(), value, rulesSets);
+                throw new ValidationException(results, value, rulesSets);
             return results;
         }
 
