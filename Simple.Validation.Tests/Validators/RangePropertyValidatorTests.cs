@@ -107,5 +107,42 @@ namespace Simple.Validation.Tests.Validators
             Assert.That(results.First().Severity, Is.EqualTo(ValidationResultSeverity.Warning));
         }
 
+        [Test]
+        public void Type()
+        {
+            // Arrange
+            const string customType = "CustomType";
+            var validator = Properties<Employee>
+                .For(e => e.Age)
+                .GreaterThanOrEqualTo(18)
+                .Type(customType);
+
+            // Act
+            var results = validator.Validate(new Employee());
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+            Assert.That(results.First().Type, Is.EqualTo(customType));
+        }
+
+        [Test]
+        public void Message()
+        {
+            // Arrange
+            const string customMessage = "CustomMessage";
+            var validator = Properties<Employee>
+                .For(e => e.Age)
+                .GreaterThanOrEqualTo(18)
+                .Message(customMessage);
+
+            // Act
+            var results = validator.Validate(new Employee());
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+            Assert.That(results.First().Message, Is.EqualTo(customMessage));
+        }
+
+
     }
 }

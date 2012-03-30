@@ -13,6 +13,7 @@ namespace Simple.Validation.Validators
         private bool _lowerInclusive = true;
         private bool _upperInclusive = true;
         private ValidationResultSeverity _severity;
+        private object _type;
 
         public RangePropertyValidator(Expression<Func<TContext, IComparable>> propertyExpression) : base(propertyExpression)
         {
@@ -38,7 +39,7 @@ namespace Simple.Validation.Validators
                     Context = context,
                     Message = message,
                     PropertyName = PropertyInfo.Name,
-                    Type = RangeValidationResultType.ValueOutOfRange,
+                    Type = _type ?? RangeValidationResultType.ValueOutOfRange,
                     Severity = _severity,
                 };
 
@@ -48,7 +49,7 @@ namespace Simple.Validation.Validators
                     Context = context,
                     Message = message,
                     PropertyName = PropertyInfo.Name,
-                    Type = RangeValidationResultType.ValueOutOfRange,
+                    Type = _type ?? RangeValidationResultType.ValueOutOfRange,
                     Severity = _severity,
                 };
         }
@@ -148,6 +149,12 @@ namespace Simple.Validation.Validators
         public RangePropertyValidator<TContext> Severity(ValidationResultSeverity severity)
         {
             _severity = severity;
+            return this;
+        }
+
+        public RangePropertyValidator<TContext> Type(object type)
+        {
+            this._type = type;
             return this;
         }
     }
