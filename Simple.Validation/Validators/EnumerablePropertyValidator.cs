@@ -123,11 +123,33 @@ namespace Simple.Validation.Validators
                        };
         }
 
-        public EnumerablePropertyValidator<T> Required()
+        public EnumerablePropertyValidator<T> Count(int? minCount, int? maxCount = null)
         {
-            _required = true;
+            _minCount = minCount;
+            _minSize = maxCount;
             return this;
         }
+
+        public EnumerablePropertyValidator<T> Cascade(params string[] rulesSets)
+        {
+            _cascade = true;
+            _cascadeRulesSets = rulesSets;
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Cascade<TPropertyType>(params string[] rulesSets)
+        {
+            _cascadePropertyType = typeof(TPropertyType);
+            _cascade = true;
+            _cascadeRulesSets = rulesSets;
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Message(string format, params object[] arguments)
+        {
+            _message = string.Format(format, arguments);
+            return this;
+        } 
 
         public EnumerablePropertyValidator<T> NotRequired()
         {
@@ -135,10 +157,9 @@ namespace Simple.Validation.Validators
             return this;
         }
 
-        public EnumerablePropertyValidator<T> Count(int? minCount, int? maxCount = null)
+        public EnumerablePropertyValidator<T> Required()
         {
-            _minCount = minCount;
-            _minSize = maxCount;
+            _required = true;
             return this;
         }
 
@@ -152,54 +173,33 @@ namespace Simple.Validation.Validators
         {
             var adapter = new EqualityComparerAdapter<T, TPropertyType>(comparer);
             return Unique()
-                .UsingUniqueComparer(adapter);
+                .UsingComparer(adapter);
         }
 
         public EnumerablePropertyValidator<T> Unique<TPropertyType>(Func<TPropertyType, TPropertyType, bool> predicate )
         {
             var comparer = new PredicateEqualityComparer<TPropertyType>(predicate);
             return Unique()
-                .UsingUniqueComparer(comparer);
+                .UsingComparer(comparer);
         }
 
         public EnumerablePropertyValidator<T> Unique<TSource>(Func<TSource, IComparable> selector)
         {
             var comparer = new SelectorEqualityComparer<TSource>(selector);
-            return Unique().UsingUniqueComparer(comparer);
+            return Unique().UsingComparer(comparer);
         }
 
-        public EnumerablePropertyValidator<T> UsingUniqueComparer<TPropertyType>(IEqualityComparer<TPropertyType> comparer )
+        public EnumerablePropertyValidator<T> UsingComparer<TPropertyType>(IEqualityComparer<TPropertyType> comparer )
         {
             var adapter = new EqualityComparerAdapter<T, TPropertyType>(comparer);
-            return UsingUniqueComparer(adapter);
+            return UsingComparer(adapter);
         } 
 
-        public EnumerablePropertyValidator<T> UsingUniqueComparer(IEqualityComparer<object> comparer)
+        public EnumerablePropertyValidator<T> UsingComparer(IEqualityComparer<object> comparer)
         {
             _uniqueComparer = comparer;
             return this;
         }
-
-        public EnumerablePropertyValidator<T> Cascade(params string[] rulesSets)
-        {
-            _cascade = true;
-            _cascadeRulesSets = rulesSets;
-            return this;
-        }
-
-        public EnumerablePropertyValidator<T> Cascade<TPropertyType>(params string[] rulesSets)
-        {
-            _cascadePropertyType = typeof (TPropertyType);
-            _cascade = true;
-            _cascadeRulesSets = rulesSets;
-            return this;
-        }
-    
-        public EnumerablePropertyValidator<T> Message(string format, params object[] arguments)
-        {
-            _message = string.Format(format, arguments);
-            return this;
-        } 
 
         public EnumerablePropertyValidator<T> Severity(ValidationResultSeverity severity)
         {

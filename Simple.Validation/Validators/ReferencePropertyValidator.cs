@@ -20,18 +20,6 @@ namespace Simple.Validation.Validators
             return true;
         }
 
-        public ReferencePropertyValidator<T> Required()
-        {
-            this._required = true;
-            return this;
-        }
-
-        public ReferencePropertyValidator<T> NotRequired()
-        {
-            this._required = false;
-            return this;
-        } 
-
         public ReferencePropertyValidator<T> Cascade(params string[] rulesSets)
         {
             this.PropertyType = PropertyInfo.PropertyType;
@@ -44,12 +32,12 @@ namespace Simple.Validation.Validators
         {
             if (!typeof(TPropertyType).IsAssignableFrom(PropertyInfo.PropertyType))
             {
-                var msg = string.Format("PropertyType from property expression '{0}' must be convertible to '{1}'", 
+                var msg = string.Format("PropertyType from property expression '{0}' must be convertible to '{1}'",
                     PropertyInfo.PropertyType, typeof(TPropertyType).FullName);
                 throw new ArgumentOutOfRangeException(msg);
             }
 
-            this.PropertyType = typeof (TPropertyType);
+            this.PropertyType = typeof(TPropertyType);
             this._cascade = true;
             this.RulesSets = rulesSets;
             return this;
@@ -60,6 +48,18 @@ namespace Simple.Validation.Validators
             this._cascade = false;
             return this;
         }
+
+        public ReferencePropertyValidator<T> Required()
+        {
+            this._required = true;
+            return this;
+        }
+
+        public ReferencePropertyValidator<T> NotRequired()
+        {
+            this._required = false;
+            return this;
+        } 
 
         public ReferencePropertyValidator<T> Message(string format, params object[] arguments)
         {
