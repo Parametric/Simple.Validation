@@ -29,7 +29,7 @@ namespace Personnel.Sample.Validators
             yield return Properties<Employee>
                 .For(e => e.Age)
                 .MinValue(18)
-                .MaxValue(35)
+                .MaxValue(65)
                 ;
 
             yield return Properties<Employee>
