@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FizzWare.NBuilder;
-using LoanApplicationSample;
 using NUnit.Framework;
 using Personnel.Sample;
 using Personnel.Sample.Comparers;
@@ -34,14 +33,14 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Severity()
+        public void Message()
         {
             // Arrange
+            const string message = "ContactInfo is required.";
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
-                .Required()
-                .Severity(ValidationResultSeverity.Warning)
-                ;
+                .Message(message)
+                .Required();
 
             // Act
             var results = validator.Validate(new Employee()
@@ -50,20 +49,41 @@ namespace Simple.Validation.Tests.Validators
             });
 
             // Assert
+            Assert.That(results, Is.Not.Empty);
             var result = results.First(vr => vr.PropertyName == "ContactInfo");
-            Assert.That(result.Severity, Is.EqualTo(ValidationResultSeverity.Warning));
+            Assert.That(result.Message, Is.EqualTo(message));
+        }
+
+        [Test]
+        public void Severity()
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Severity(ValidationResultSeverity.Warning)
+                .Required();
+
+            // Act
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = null,
+            });
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+            var result = results.First(vr => vr.PropertyName == "ContactInfo");
+            Assert.That(result.Severity, Is.EqualTo(ValidationResultSeverity.Warning));            
         }
 
         [Test]
         public void Type()
         {
             // Arrange
-            const string customResultType = "MyCustomResultType";
+            const string customType = "ContactInfo is required.";
             var validator = Properties<Employee>
                 .For(e => e.ContactInfo)
-                .Required()
-                .Type(customResultType)
-                ;
+                .Type(customType)
+                .Required();
 
             // Act
             var results = validator.Validate(new Employee()
@@ -72,30 +92,9 @@ namespace Simple.Validation.Tests.Validators
             });
 
             // Assert
+            Assert.That(results, Is.Not.Empty);
             var result = results.First(vr => vr.PropertyName == "ContactInfo");
-            Assert.That(result.Type, Is.EqualTo(customResultType));
-        }
-
-        [Test]
-        public void Message()
-        {
-            // Arrange
-            var message= "This is a message";
-            var validator = Properties<Employee>
-                .For(e => e.ContactInfo)
-                .Required()
-                .Message(message)
-                ;
-
-            // Act
-            var results = validator.Validate(new Employee()
-            {
-                ContactInfo = null,
-            });
-
-            // Assert
-            var result = results.First(vr => vr.PropertyName == "ContactInfo");
-            Assert.That(result.Message, Is.EqualTo(message));
+            Assert.That(result.Type, Is.EqualTo(customType));           
         }
 
         [Test]
@@ -581,11 +580,12 @@ namespace Simple.Validation.Tests.Validators
 
 
         [Test]
-        public void Cascade_ValidValues()
+        public void Cascade_Enumerable_ValidValues()
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
             validatorProvider.RegisterValidator(new SaveContactInfoValidator());
+            validatorProvider.RegisterValidator(new EmailAddressValidator());
             Validator.SetValidatorProvider(validatorProvider);
 
             var validator = Properties<Employee>
@@ -594,13 +594,16 @@ namespace Simple.Validation.Tests.Validators
                 ;
 
             // Act
-            var contactInfo = Builder<ContactInfo>
-                .CreateListOfSize(2)
-                .All().Do(c => c.Type = "Email")
+            var contactInfo = Builder<EmailAddress>
+                .CreateListOfSize(1)
+                .All()
+                .Do(c => c.Type = "Email")
+                .Do(c => c.Text = "email@email.com")
                 .Build();
+
             var results = validator.Validate(new Employee()
             {
-                ContactInfo = contactInfo,
+                ContactInfo = contactInfo.Cast<ContactInfo>().ToList(),
             }).ToList();
 
             // Assert
@@ -608,11 +611,12 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
-        public void Cascade_InValidValues()
+        public void Cascade_Enumerable_InValidValues()
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
             validatorProvider.RegisterValidator(new SaveContactInfoValidator());
+            validatorProvider.RegisterValidator(new EmailAddressValidator());
             Validator.SetValidatorProvider(validatorProvider);
 
             var validator = Properties<Employee>
@@ -621,17 +625,15 @@ namespace Simple.Validation.Tests.Validators
                 ;
 
             // Act
-            var contactInfo = Builder<ContactInfo>
-                .CreateListOfSize(2)
-                .All().Do(c =>
-                              {
-                                  c.Type = "Email";
-                                  c.Text = string.Empty;
-                              })
+            var contactInfo = Builder<EmailAddress>
+                .CreateListOfSize(1)
+                .All()
+                .Do(c => c.Type = "Email")
+                .Do(c => c.Text = "invalid.emailaddress")
                 .Build();
             var employee = new Employee()
                                {
-                                   ContactInfo = contactInfo,
+                                   ContactInfo = contactInfo.Cast<ContactInfo>().ToList(),
                                };
             var results = validator.Validate(employee).ToList();
 
@@ -650,6 +652,110 @@ namespace Simple.Validation.Tests.Validators
             }
         }
 
+        [Test]
+        public void Cascade_WithGenericType_ValidValues()
+        {
+            // Arrange
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
+            validatorProvider.RegisterValidator(new EmailAddressValidator());
+            Validator.SetValidatorProvider(validatorProvider);
+
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Cascade<ContactInfo>("Save")
+                ;
+
+            // Act
+            var contactInfo = Builder<EmailAddress>
+                .CreateListOfSize(1)
+                .All()
+                .Do(c => c.Type = "Email")
+                .Do(c => c.Text = "email@email.com")
+                .Build();
+
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = contactInfo.Cast<ContactInfo>().ToList(),
+            }).ToList();
+
+            // Assert
+            Assert.That(results, Is.Empty);
+        }
+
+        [Test]
+        public void Cascade_WithGenericType_InvalidValuesForSubType()
+        {
+            // Arrange
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
+            validatorProvider.RegisterValidator(new EmailAddressValidator());
+            Validator.SetValidatorProvider(validatorProvider);
+
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Cascade<ContactInfo>("Save")
+                ;
+
+            // Act
+            var contactInfo = Builder<EmailAddress>
+                .CreateListOfSize(1)
+                .All()
+                .Do(c => c.Type = "Email")
+                .Do(c => c.Text = "InvalidForEmail")
+                .Build();
+
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = contactInfo.Cast<ContactInfo>().ToList(),
+            }).ToList();
+
+            // Assert
+            Assert.That(results, Is.Empty);
+        }
+        
+        [Test]
+        public void Cascade_WithGenericType_InValidValues()
+        {
+            // Arrange
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
+            Validator.SetValidatorProvider(validatorProvider);
+
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Cascade<ContactInfo>("Save")
+                ;
+
+            // Act
+            var contactInfo = Builder<ContactInfo>
+                .CreateListOfSize(2)
+                .All().Do(c =>
+                {
+                    c.Type = "Email";
+                    c.Text = string.Empty;
+                })
+                .Build();
+            var employee = new Employee()
+            {
+                ContactInfo = contactInfo,
+            };
+            var results = validator.Validate(employee).ToList();
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+            for (var i = 0; i < contactInfo.Count; i++)
+            {
+                var expectedPropertyName = string.Format("ContactInfo[{0}].Text", i);
+                var expectedResults = results.Where(vr => vr.PropertyName == expectedPropertyName).ToList();
+                Assert.That(expectedResults, Is.Not.Empty);
+
+                foreach (var expectedResult in expectedResults)
+                {
+                    Assert.That(expectedResult.Context == employee);
+                }
+            }
+        }
 
         [Test]
         public void CascadeOverManager_Should_SetPropertyNamesCorrectlyForAllDescendants()

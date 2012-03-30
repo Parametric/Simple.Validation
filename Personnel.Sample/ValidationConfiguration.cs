@@ -1,7 +1,7 @@
 ﻿using Personnel.Sample.Validators;
 using Simple.Validation;
 
-namespace LoanApplicationSample
+namespace Personnel.Sample
 {
     public class ValidationConfiguration
     {
@@ -14,6 +14,7 @@ namespace LoanApplicationSample
 
         private static void RegisterValidators(DefaultValidatorProvider validatorProvider)
         {
+            validatorProvider.RegisterValidator(new EmailAddressValidator());
             validatorProvider.RegisterValidator(new SaveAddressValidator());
             validatorProvider.RegisterValidator(new SaveContactInfoValidator());
             validatorProvider.RegisterValidator(new SaveEmployeeValidator());
