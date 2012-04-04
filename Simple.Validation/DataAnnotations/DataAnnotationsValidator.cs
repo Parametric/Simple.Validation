@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿#if !SILVERLIGHT
+using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Simple.Validation.DataAnnotations
 {
@@ -68,3 +69,5 @@ namespace Simple.Validation.DataAnnotations
         
     }
 }
+
+#endif
