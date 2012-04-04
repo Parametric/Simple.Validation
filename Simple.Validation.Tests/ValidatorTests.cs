@@ -246,12 +246,12 @@ namespace Simple.Validation.Tests
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new EmployeeInterfaceValidator() );
+            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
 
             Validator.SetValidatorProvider(validatorProvider);
 
             // Act
-            var results = Validator.Validate(typeof(IEmployee), new Employee(), RulesSets.Crud.Save);
+            var results = Validator.Validate(typeof(Employee), new Manager(), RulesSets.Crud.Save);
 
             // Assert
             Assert.That(results, Is.Not.Empty);

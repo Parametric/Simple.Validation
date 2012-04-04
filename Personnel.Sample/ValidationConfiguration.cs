@@ -14,7 +14,6 @@ namespace Personnel.Sample
 
         private static void RegisterValidators(DefaultValidatorProvider validatorProvider)
         {
-            validatorProvider.RegisterValidator(new EmailAddressValidator());
             validatorProvider.RegisterValidator(new SaveAddressValidator());
             validatorProvider.RegisterValidator(new SaveContactInfoValidator());
             validatorProvider.RegisterValidator(new SaveEmployeeValidator());

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FizzWare.NBuilder;
 using NUnit.Framework;
@@ -578,33 +579,42 @@ namespace Simple.Validation.Tests.Validators
             Assert.That(result, Is.Not.Null);
         }
 
-
         [Test]
         public void Cascade_Enumerable_ValidValues()
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
-            validatorProvider.RegisterValidator(new EmailAddressValidator());
+            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
+            validatorProvider.RegisterValidator(new SaveManagerValidator());
             Validator.SetValidatorProvider(validatorProvider);
 
-            var validator = Properties<Employee>
-                .For(e => e.ContactInfo)
+            var validator = Properties<Manager>
+                .For(e => e.Reports)
                 .Cascade("Save")
                 ;
 
             // Act
-            var contactInfo = Builder<EmailAddress>
+            var manager = new Manager();
+            var reports = Builder<Manager>
                 .CreateListOfSize(1)
                 .All()
-                .Do(c => c.Type = "Email")
-                .Do(c => c.Text = "email@email.com")
+                .Do(m => m.Age += 20)
+                .Do(m => m.Address = Builder<Address>.CreateNew().Build())
+                .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
+                .Do(m => m.ReportsTo = manager)
+                .Do(m => m.Reports = Builder<Employee>
+                    .CreateListOfSize(10)
+                    .All()
+                    .Do(e => e.Address = Builder<Address>.CreateNew().Build())
+                    .Do(e => e.ReportsTo = m)
+                    .Do(e => e.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
+                    .Do(e => e.Age += 20)
+                    .Build())
                 .Build();
 
-            var results = validator.Validate(new Employee()
-            {
-                ContactInfo = contactInfo.Cast<ContactInfo>().ToList(),
-            }).ToList();
+            manager.Reports = reports.Cast<Employee>().ToList();
+
+            var results = validator.Validate(manager).ToList();
 
             // Assert
             Assert.That(results, Is.Empty);
@@ -615,39 +625,51 @@ namespace Simple.Validation.Tests.Validators
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
-            validatorProvider.RegisterValidator(new EmailAddressValidator());
+            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
+            validatorProvider.RegisterValidator(new SaveManagerValidator());
             Validator.SetValidatorProvider(validatorProvider);
 
-            var validator = Properties<Employee>
-                .For(e => e.ContactInfo)
+            var validator = Properties<Manager>
+                .For(e => e.Reports)
                 .Cascade("Save")
                 ;
 
             // Act
-            var contactInfo = Builder<EmailAddress>
+            var manager = new Manager();
+            var reports = Builder<Manager>
                 .CreateListOfSize(1)
                 .All()
-                .Do(c => c.Type = "Email")
-                .Do(c => c.Text = "invalid.emailaddress")
+                //.Do(m => m.Age += 20)
+                .Do(m => m.Address = Builder<Address>.CreateNew().Build())
+                .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
+                .Do(m => m.ReportsTo = manager)
+                .Do(m => m.Reports = Builder<Employee>
+                    .CreateListOfSize(10)
+                    .All()
+                    .Do(e => e.Address = Builder<Address>.CreateNew().Build())
+                    .Do(e => e.ReportsTo = m)
+                    .Do(e => e.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
+                    .Do(e => e.Age += 20)
+                    .Build())
                 .Build();
-            var employee = new Employee()
-                               {
-                                   ContactInfo = contactInfo.Cast<ContactInfo>().ToList(),
-                               };
-            var results = validator.Validate(employee).ToList();
+
+            manager.Reports = reports.Cast<Employee>().ToList();
+
+            var results = validator.Validate(manager).ToList();
+
+            // Assert
 
             // Assert
             Assert.That(results, Is.Not.Empty);
-            for (var i = 0; i < contactInfo.Count; i++)
+            for (var i = 0; i < manager.Reports.Count; i++)
             {
-                var expectedPropertyName = string.Format("ContactInfo[{0}].Text", i);
+                var expectedPropertyName = string.Format("Reports[{0}].Age", i);
                 var expectedResults = results.Where(vr => vr.PropertyName == expectedPropertyName).ToList();
                 Assert.That(expectedResults, Is.Not.Empty);
 
                 foreach (var expectedResult in expectedResults)
                 {
-                    Assert.That(expectedResult.Context == employee);
+                    Assert.That(expectedResult.Context == manager);
                 }
             }
         }
@@ -657,27 +679,30 @@ namespace Simple.Validation.Tests.Validators
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
-            validatorProvider.RegisterValidator(new EmailAddressValidator());
+            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
+            validatorProvider.RegisterValidator(new SaveManagerValidator());
             Validator.SetValidatorProvider(validatorProvider);
 
-            var validator = Properties<Employee>
-                .For(e => e.ContactInfo)
-                .Cascade<ContactInfo>("Save")
+            var validator = Properties<Manager>
+                .For(e => e.Reports)
+                .Cascade<Employee>("Save")
                 ;
 
             // Act
-            var contactInfo = Builder<EmailAddress>
+            var manager = new Manager();
+            var reports = Builder<Manager>
                 .CreateListOfSize(1)
                 .All()
-                .Do(c => c.Type = "Email")
-                .Do(c => c.Text = "email@email.com")
+                .Do(m => m.Age += 20)
+                .Do(m => m.Address = Builder<Address>.CreateNew().Build())
+                .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
+                .Do(m => m.ReportsTo = manager)
+                .Do(m => m.Reports = Builder<Employee>.CreateListOfSize(10).Build())
                 .Build();
 
-            var results = validator.Validate(new Employee()
-            {
-                ContactInfo = contactInfo.Cast<ContactInfo>().ToList(),
-            }).ToList();
+            manager.Reports = reports.Cast<Employee>().ToList();
+
+            var results = validator.Validate(manager).ToList();
 
             // Assert
             Assert.That(results, Is.Empty);
@@ -688,27 +713,30 @@ namespace Simple.Validation.Tests.Validators
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
-            validatorProvider.RegisterValidator(new EmailAddressValidator());
+            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
+            validatorProvider.RegisterValidator(new SaveManagerValidator());
             Validator.SetValidatorProvider(validatorProvider);
 
-            var validator = Properties<Employee>
-                .For(e => e.ContactInfo)
-                .Cascade<ContactInfo>("Save")
+            var validator = Properties<Manager>
+                .For(e => e.Reports)
+                .Cascade<Employee>("Save")
                 ;
 
             // Act
-            var contactInfo = Builder<EmailAddress>
+            var manager = new Manager();
+            var reports = Builder<Manager>
                 .CreateListOfSize(1)
                 .All()
-                .Do(c => c.Type = "Email")
-                .Do(c => c.Text = "InvalidForEmail")
+                .Do(m => m.Age += 20)
+                .Do(m => m.Address = Builder<Address>.CreateNew().Build())
+                .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
+                .Do(m => m.ReportsTo = manager)
+                .Do(m => m.Reports = new List<Employee>())
                 .Build();
 
-            var results = validator.Validate(new Employee()
-            {
-                ContactInfo = contactInfo.Cast<ContactInfo>().ToList(),
-            }).ToList();
+            manager.Reports = reports.Cast<Employee>().ToList();
+
+            var results = validator.Validate(manager).ToList();
 
             // Assert
             Assert.That(results, Is.Empty);
@@ -719,42 +747,42 @@ namespace Simple.Validation.Tests.Validators
         {
             // Arrange
             var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new SaveContactInfoValidator());
+            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
+            validatorProvider.RegisterValidator(new SaveManagerValidator());
             Validator.SetValidatorProvider(validatorProvider);
 
-            var validator = Properties<Employee>
-                .For(e => e.ContactInfo)
-                .Cascade<ContactInfo>("Save")
+            var validator = Properties<Manager>
+                .For(e => e.Reports)
+                .Cascade<Employee>("Save")
                 ;
 
             // Act
-            var contactInfo = Builder<ContactInfo>
-                .CreateListOfSize(2)
-                .All().Do(c =>
-                {
-                    c.Type = "Email";
-                    c.Text = string.Empty;
-                })
+            var manager = new Manager();
+            var reports = Builder<Manager>
+                .CreateListOfSize(1)
+                .All()
+                .Do(m => m.Age += 20)
+                .Do(m => m.Address = Builder<Address>.CreateNew().Build())
+                .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
+                .Do(m => m.ReportsTo = null)
                 .Build();
-            var employee = new Employee()
-            {
-                ContactInfo = contactInfo,
-            };
-            var results = validator.Validate(employee).ToList();
+
+            manager.Reports = reports.Cast<Employee>().ToList();
+
+            var results = validator.Validate(manager).ToList();
 
             // Assert
             Assert.That(results, Is.Not.Empty);
-            for (var i = 0; i < contactInfo.Count; i++)
+            for (var i = 0; i < manager.Reports.Count; i++)
             {
-                var expectedPropertyName = string.Format("ContactInfo[{0}].Text", i);
+                var expectedPropertyName = string.Format("Reports[{0}].ReportsTo", i);
                 var expectedResults = results.Where(vr => vr.PropertyName == expectedPropertyName).ToList();
                 Assert.That(expectedResults, Is.Not.Empty);
 
                 foreach (var expectedResult in expectedResults)
-                {
-                    Assert.That(expectedResult.Context == employee);
-                }
+                    Assert.That(expectedResult.Context == manager);
             }
+
         }
 
         [Test]

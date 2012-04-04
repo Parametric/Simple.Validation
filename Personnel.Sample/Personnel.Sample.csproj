@@ -45,18 +45,13 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="Comparers\ContactInfoTypeEqualityComparer.cs" />
-    <Compile Include="EmailAddress.cs" />
     <Compile Include="ValidationConfiguration.cs" />
     <Compile Include="ContactInfo.cs" />
     <Compile Include="RulesSets.cs" />
     <Compile Include="PhoneNumber.cs" />
-    <Compile Include="Validators\EmailAddressValidator.cs" />
-    <Compile Include="Validators\EmployeeInterfaceValidator.cs" />
     <Compile Include="Validators\SaveAddressValidator.cs" />
     <Compile Include="Validators\SaveEmployeeValidator.cs" />
     <Compile Include="Employee.cs" />
-    <Compile Include="EmployeeWithoutDataAnnotations.cs" />
-    <Compile Include="IEmployee.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validators\RulesSetEmployeeValidator.cs" />

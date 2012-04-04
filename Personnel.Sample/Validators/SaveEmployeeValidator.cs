@@ -6,6 +6,11 @@ namespace Personnel.Sample.Validators
 {
     public class SaveEmployeeValidator : CompositeValidator<Employee>
     {
+        private const int MinimumHireAge = 18;
+        private const int MaximumHireAge = 65;
+        private const int MinimumNameLength = 3;
+        private const int MaximumNameLength = 50;
+
         public override bool AppliesTo(string rulesSet)
         {
             return rulesSet == RulesSets.Crud.Save;
@@ -15,26 +20,31 @@ namespace Personnel.Sample.Validators
         {
             yield return Properties<Employee>
                 .For(e => e.FirstName)
-                .Length(3, 50)
+                .Length(MinimumNameLength, MaximumNameLength)
                 .Required()
                 .IgnoreWhiteSpace();
 
             yield return Properties<Employee>
                 .For(e => e.LastName)
-                .Length(3, 50)
+                .Length(MinimumNameLength, MaximumNameLength)
                 .Required()
                 .IgnoreWhiteSpace()
+                .Message("Last name is a required field and must be between {0} an {1} characters in length."
+                    , MinimumNameLength, MaximumNameLength)
                 ;
 
             yield return Properties<Employee>
                 .For(e => e.Age)
-                .MinValue(18)
-                .MaxValue(65)
+                .MinValue(MinimumHireAge)
+                .MaxValue(MaximumHireAge)
+                .Message("Employees must be between the ages of {0} and {1}"
+                    , MinimumHireAge, MaximumHireAge)
                 ;
 
             yield return Properties<Employee>
                 .For(e => e.Address)
                 .Required()
+                .Message("Address is required.")
                 .Cascade("Save")
                 ;
 
@@ -43,8 +53,14 @@ namespace Personnel.Sample.Validators
                 .Required()
                 .Count(1)
                 .Unique<ContactInfo>(c => c.Type)
-                .Cascade("Save");
+                .Cascade("Save")
+                ;
 
+            yield return Properties<Employee>
+                .For(e => e.ReportsTo)
+                .Required()
+                .If(e => e.Title != "Chief Executive Officer")
+                ;
         }
     }
 }

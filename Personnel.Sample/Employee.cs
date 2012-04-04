@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Personnel.Sample
 {
-    public class Employee : IEmployee
+    public class Employee
     {
         public int EmployeeId { get; set; }
 
@@ -27,5 +27,6 @@ namespace Personnel.Sample
 
         public IList<ContactInfo> ContactInfo { get; set; }
 
+        public string Title { get; set; }
     }
 }
