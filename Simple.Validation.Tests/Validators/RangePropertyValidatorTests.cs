@@ -143,6 +143,48 @@ namespace Simple.Validation.Tests.Validators
             Assert.That(results.First().Message, Is.EqualTo(customMessage));
         }
 
+        [Test]
+        public void If_PredicateIsTrue_ShouldValidate()
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.Age)
+                .GreaterThanOrEqualTo(18)
+                .If(e => e.Age != -1)
+                ;
+
+            // Act
+            var employee = new Employee()
+            {
+                Age = 15
+            };
+            var results = validator.Validate(employee);
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+        }
+
+        [Test]
+        public void If_PredicateIsFalse_ShouldNotValidate()
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.Age)
+                .GreaterThanOrEqualTo(18)
+                .If(e => e.Age != -1)
+                ;
+
+            // Act
+            var employee = new Employee()
+            {
+                Age = -1
+            };
+            var results = validator.Validate(employee);
+
+            // Assert
+            Assert.That(results, Is.Empty);
+
+        }
 
     }
 }

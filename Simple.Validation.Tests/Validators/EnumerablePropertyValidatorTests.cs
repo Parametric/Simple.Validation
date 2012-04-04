@@ -785,5 +785,46 @@ namespace Simple.Validation.Tests.Validators
             var result = results.FirstOrDefault(vr => vr.PropertyName == "Reports[0].ContactInfo[0].Text");
             Assert.That(result, Is.Not.Null);
         }
+
+
+        [Test]
+        public void If_WhenPredicateTrue_ShouldValidate()
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Required()
+                .If(e => true)
+                ;
+
+            // Act
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = null,
+            });
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+        }
+
+        [Test]
+        public void If_WhenPredicateFalse_ShouldNotValidate()
+        {
+            // Arrange
+            var validator = Properties<Employee>
+                .For(e => e.ContactInfo)
+                .Required()
+                .If(e => false)
+                ;
+
+            // Act
+            var results = validator.Validate(new Employee()
+            {
+                ContactInfo = null,
+            });
+
+            // Assert
+            Assert.That(results, Is.Empty);
+        }
     }
 }

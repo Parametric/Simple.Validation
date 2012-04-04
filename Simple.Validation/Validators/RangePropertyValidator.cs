@@ -14,6 +14,7 @@ namespace Simple.Validation.Validators
         private bool _upperInclusive = true;
         private ValidationResultSeverity _severity;
         private object _type;
+        private Func<TContext, bool> _predicate;
 
         public RangePropertyValidator(Expression<Func<TContext, IComparable>> propertyExpression) : base(propertyExpression)
         {
@@ -31,8 +32,11 @@ namespace Simple.Validation.Validators
             return Validate(propertyValue, value, _message);
         }
 
-        private IEnumerable<ValidationResult> Validate(IComparable valueToValidate, object context = null, string message = "")
+        private IEnumerable<ValidationResult> Validate(IComparable valueToValidate, TContext context = default(TContext), string message = "")
         {
+            if (!CanValidate(context))
+                yield break;
+
             if (!IsValidMin(valueToValidate))
                 yield return new ValidationResult()
                 {
@@ -52,6 +56,11 @@ namespace Simple.Validation.Validators
                     Type = _type ?? RangeValidationResultType.ValueOutOfRange,
                     Severity = _severity,
                 };
+        }
+
+        private bool CanValidate(TContext context)
+        {
+            return _predicate == null || _predicate(context);
         }
 
         private bool IsValidMin(IComparable valueToValidate)
@@ -155,6 +164,12 @@ namespace Simple.Validation.Validators
         public RangePropertyValidator<TContext> Type(object type)
         {
             this._type = type;
+            return this;
+        }
+
+        public RangePropertyValidator<TContext> If(Func<TContext, bool> predicate)
+        {
+            _predicate = predicate;
             return this;
         }
     }

@@ -348,5 +348,51 @@ namespace Simple.Validation.Tests.Validators
             Assert.That(results.First().Message, Is.EqualTo(customMessage));
         }
 
+        [Test]
+        public void If_PredicateIsTrue_ShouldValidate()
+        {
+            // Arrange
+            const string customMessage = "CustomMessage";
+            var acceptableLongMessage = "This is a test of the emergency broadcast system.";
+            var validator = Properties<Employee>
+                .For(e => e.FirstName)
+                .Length(3, 30)
+                .If(e => e.FirstName != acceptableLongMessage)
+                .Message(customMessage);
+
+            // Act
+            var employee = new Employee()
+                               {
+                                   FirstName = "This is another really long first name that should be rejected.",
+                               };
+            var results = validator.Validate(employee);
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+        }
+
+        [Test]
+        public void If_PredicateIsFalse_ShouldNotValidate()
+        {
+            // Arrange
+            const string customMessage = "CustomMessage";
+            var acceptableLongMessage = "This is a test of the emergency broadcast system.";
+            var validator = Properties<Employee>
+                .For(e => e.FirstName)
+                .Length(3, 30)
+                .If(e => e.FirstName != acceptableLongMessage)
+                .Message(customMessage);
+
+            // Act
+            var employee = new Employee()
+            {
+                FirstName = acceptableLongMessage,
+            };
+            var results = validator.Validate(employee);
+
+            // Assert
+            Assert.That(results, Is.Empty);
+        }
+
     }
 }

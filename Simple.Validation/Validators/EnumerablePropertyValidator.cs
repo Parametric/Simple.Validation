@@ -21,6 +21,7 @@ namespace Simple.Validation.Validators
         private bool _cascade;
         private string[] _cascadeRulesSets;
         private Type _cascadePropertyType;
+        private Func<T, bool> _predicate;
 
         public EnumerablePropertyValidator(LambdaExpression propertyExpression) : base(propertyExpression)
         {
@@ -33,6 +34,9 @@ namespace Simple.Validation.Validators
 
         public override IEnumerable<ValidationResult> Validate(T value)
         {
+            if (!CanValidate(value))
+                return Enumerable.Empty<ValidationResult>();
+
             var results = new List<ValidationResult>();
 
             var enumerableValue = GetPropertyValue<IEnumerable<object>>(value);
@@ -62,6 +66,11 @@ namespace Simple.Validation.Validators
                 CascadeValidate(value, materialized, results);
 
             return results;
+        }
+
+        private bool CanValidate(T value)
+        {
+            return _predicate == null || _predicate(value);
         }
 
         private void CascadeValidate(T context, IEnumerable<object> enumerableValue, List<ValidationResult> results)
@@ -210,6 +219,12 @@ namespace Simple.Validation.Validators
         public EnumerablePropertyValidator<T> Type(object customType)
         {
             _type = customType;
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> If(Func<T, bool> predicate)
+        {
+            _predicate = predicate;
             return this;
         }
     }

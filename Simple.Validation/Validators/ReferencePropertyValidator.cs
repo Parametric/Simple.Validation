@@ -13,6 +13,7 @@ namespace Simple.Validation.Validators
         private string _message;
         private ValidationResultSeverity _severity = ValidationResultSeverity.Error;
         private object _type;
+        private Func<T, bool> _predicate;
         protected string[] RulesSets { get; set; }
 
         public override bool AppliesTo(string rulesSet)
@@ -81,6 +82,9 @@ namespace Simple.Validation.Validators
 
         public override IEnumerable<ValidationResult> Validate(T value)
         {
+            if (!CanValidate(value))
+                return Enumerable.Empty<ValidationResult>();
+
             var results = new List<ValidationResult>();
 
             var propertyValue = base.GetPropertyValue<object>(value);
@@ -90,6 +94,11 @@ namespace Simple.Validation.Validators
                 PerformCascadeValidate(value, results, propertyValue);
 
             return results;
+        }
+
+        private bool CanValidate(T value)
+        {
+            return _predicate == null || _predicate(value);
         }
 
         private void PerformCascadeValidate(T valueBeingValidated, List<ValidationResult> results, object propertyValue)
@@ -130,6 +139,12 @@ namespace Simple.Validation.Validators
         public ReferencePropertyValidator(Expression<Func<T, object>> propertyExpression) : base(propertyExpression)
         {
             Severity(ValidationResultSeverity.Error);
+        }
+
+        public ReferencePropertyValidator<T> If(Func<T, bool> predicate)
+        {
+            _predicate = predicate;
+            return this;
         }
     }
 }

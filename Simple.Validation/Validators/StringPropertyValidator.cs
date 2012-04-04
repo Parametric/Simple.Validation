@@ -20,6 +20,7 @@ namespace Simple.Validation.Validators
         private Func<string, bool> _isTruePredicate;
         private Func<string, bool> _isFalsePredicate;
         private object _type;
+        private Func<T, bool> _predicate;
 
         public override bool AppliesTo(string rulesSet)
         {
@@ -50,8 +51,11 @@ namespace Simple.Validation.Validators
             return value;
         }
 
-        private IEnumerable<ValidationResult> Validate(string value, object context = null, string message = "")
+        private IEnumerable<ValidationResult> Validate(string value, T context = default(T), string message = "")
         {
+            if (!CanValidate(context))
+                yield break;
+
             var valueToValidate = GetValueToValidate(value);
 
             if (_required && string.IsNullOrWhiteSpace(valueToValidate))
@@ -80,6 +84,11 @@ namespace Simple.Validation.Validators
 
             if (_isFalsePredicate != null && _isFalsePredicate(valueToValidate))
                 yield return NewValidationResult(context, message, null);
+        }
+
+        private bool CanValidate(T context)
+        {
+            return _predicate == null || _predicate(context);
         }
 
         private ValidationResult NewValidationResult(object context, string message, object type)
@@ -168,6 +177,12 @@ namespace Simple.Validation.Validators
         public StringPropertyValidator<T> Type(object type)
         {
             _type = type;
+            return this;
+        }
+
+        public StringPropertyValidator<T> If(Func<T, bool> predicate)
+        {
+            _predicate = predicate;
             return this;
         }
     }

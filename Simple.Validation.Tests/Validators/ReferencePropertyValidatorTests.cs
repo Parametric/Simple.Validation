@@ -265,5 +265,68 @@ namespace Simple.Validation.Tests.Validators
             Assert.Throws<ArgumentOutOfRangeException>(() => validator.Cascade<ContactInfo>("Save"));
         }
 
+        [Test]
+        public void If_WhenPredicateTrue_ShouldValidate()
+        {
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new SaveAddressValidator());
+            Validator.SetValidatorProvider(validatorProvider);
+
+            var acceptableLine1 = "This is a test of the emergency broadcast system.";
+            var validator = Properties<Employee>
+                .For(e => e.Address)
+                .Cascade("Save")
+                .If(e => e.Address.Line1 != acceptableLine1)
+                ;
+
+            // Act
+            var employee = new Employee()
+            {
+                ReportsTo = new Manager(),
+                Address = new Address()
+                {
+                    Line1 = null,
+                }
+            };
+            var results = validator.Validate(employee);
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+            var result = results.First();
+            Assert.That(result.Context, Is.EqualTo(employee));
+            Assert.That(result.PropertyName, Is.EqualTo("Address.Line1"));
+            Assert.That(result.Severity, Is.EqualTo(ValidationResultSeverity.Error));
+            Assert.That(result.Type, Is.EqualTo(TextValidationResultType.RequiredValueNotFound));
+        }
+
+        [Test]
+        public void If_WhenPredicateFalse_ShouldNotValidate()
+        {
+            var validatorProvider = new DefaultValidatorProvider();
+            validatorProvider.RegisterValidator(new SaveAddressValidator());
+            Validator.SetValidatorProvider(validatorProvider);
+
+            var acceptableLine1 = "This is a test of the emergency broadcast system.";
+            var validator = Properties<Employee>
+                .For(e => e.Address)
+                .Cascade("Save")
+                .If(e => e.Address.Line1 != acceptableLine1)
+                ;
+
+            // Act
+            var employee = new Employee()
+            {
+                ReportsTo = new Manager(),
+                Address = new Address()
+                {
+                    Line1 = acceptableLine1,
+                }
+            };
+            var results = validator.Validate(employee);
+
+            // Assert
+            Assert.That(results, Is.Empty);
+        }
+
     }
 }
