@@ -16,6 +16,7 @@ namespace Personnel.Sample
         [StringLength(50, MinimumLength = 2)]
         public string LastName { get; set; }
 
+        [Required]
         [Range(18, 65)]
         public int Age { get; set; }
 

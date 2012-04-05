@@ -1,5 +1,4 @@
-﻿#if !SILVERLIGHT
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,54 +19,22 @@ namespace Simple.Validation.DataAnnotations
         {
             var validationContext = new ValidationContext(value, null, null);
 
-            var classLevelValidationResults = GetClassLevelValidationResults(value, validationContext);
-            var propertyLevelValidationResults = GetPropertyLevelValidationResults(value, validationContext);
-            var allResults = classLevelValidationResults.Union(propertyLevelValidationResults);
-            return allResults;
-        }
+            var dataAnnotationsValidationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+            System.ComponentModel.DataAnnotations.Validator
+                .TryValidateObject(value, validationContext, dataAnnotationsValidationResults, validateAllProperties:true);
 
-        private IEnumerable<ValidationResult> GetPropertyLevelValidationResults(T value, ValidationContext validationContext)
-        {
+            var q = dataAnnotationsValidationResults
+                .Select(vr => new ValidationResult()
+                {
+                    Context = value,
+                    Message = vr.ErrorMessage,
+                    PropertyName = string.Join(", ", vr.MemberNames),
+                    Severity = ValidationResultSeverity.Error,
+                    Type = typeof(ValidationAttribute),
+                });
 
-            var query = from propertyInfo in value.GetType().GetProperties()
-                        from attr in propertyInfo.GetCustomAttributes<ValidationAttribute>(inherit: true)
-                        let propertyValue = propertyInfo.GetValue(value, null)
-                        where !attr.IsValid(propertyValue)
-                        let validationAttributeResult = attr.GetValidationResult(propertyValue, validationContext)
-                        select new ValidationResult()
-                        {
-                            Context = value,
-                            Message = validationAttributeResult.ErrorMessage,
-                            PropertyName = propertyInfo.Name,
-                            Type = "DataAnnotationError",
-                        };
-
-            return query;
-        }
-
-        private static IEnumerable<ValidationResult> GetClassLevelValidationResults(T value, ValidationContext validationContext)
-        {
-            var attributes = value.GetType().GetCustomAttributes<ValidationAttribute>(inherit: true);
-            var invalidAttributes = attributes.Where(attr => !attr.IsValid(value));
-
-            var attributeValidationResults =
-                from attr in invalidAttributes
-                let attrValidationResult = attr.GetValidationResult(value, validationContext)
-                select new ValidationResult()
-                           {
-                               Context = value,
-                               Message = attrValidationResult.ErrorMessage,
-                               PropertyName = attrValidationResult.MemberNames.FirstOrDefault(),
-                               Type = "DataAnnotationError",
-                           };
-            return attributeValidationResults;
+            return q;
         }
     }
 
-    public class DataAnnotationsValidator : DataAnnotationsValidator<object>
-    {
-        
-    }
 }
-
-#endif

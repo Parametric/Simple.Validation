@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using NUnit.Framework;
 using Personnel.Sample;
 using Simple.Validation.DataAnnotations;
@@ -8,26 +9,24 @@ namespace Simple.Validation.Tests.DataAnnotations
     [TestFixture]
     public class DataAnnotationsValidatorTests
     {
-        [SetUp]
-        public void BeforeEachTest()
-        {
-            var provider = new DefaultValidatorProvider();
-            provider.RegisterValidator(new DataAnnotationsValidator());
-
-            Validator.SetValidatorProvider(provider);
-        }
 
         [Test]
         public void ValidateAge()
         {
             // Arrange
-            var employee = new Employee();
+            var employee = new Employee()
+                               {
+                                   FirstName = "Fred",
+                                   LastName = "Flintstone",
+                                   Age = 0,
+                               };
 
             // Act
-            var results = Validator.Validate(employee).ToList();
+            var results = new DataAnnotationsValidator<Employee>()
+                .Validate(employee);
 
             // Assert
-            results.AssertInvalidFor("Age", "DataAnnotationError");
+            results.AssertInvalidFor("Age", typeof(ValidationAttribute));
             var result = results.Single(r => r.PropertyName == "Age");
             Assert.That(result.Context, Is.SameAs(employee));
         }
