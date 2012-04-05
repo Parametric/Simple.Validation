@@ -16,5 +16,6 @@
   </metadata>
   <files>
     <file src="Simple.Validation\bin\Release\Simple.Validation.dll" target="lib\net40" />
+    <file src="Simple.Validation.Silverlight\bin\Release\Simple.Validation.dll" target="lib\sl40" />
   </files>
 </package>
