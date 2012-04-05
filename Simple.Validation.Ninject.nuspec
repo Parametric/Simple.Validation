@@ -19,5 +19,6 @@
   </metadata>
   <files>
     <file src="Simple.Validation.Ninject\bin\Release\Simple.Validation.Ninject.dll" target="lib\net40" />
+    <file src="Simple.Validation.Ninject.Silverlight\bin\Release\Simple.Validation.Ninject.dll" target="lib\sl40" />
   </files>
 </package>

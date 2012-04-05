@@ -41,7 +41,6 @@ namespace Simple.Validation.Tests.Validators
         public void Severity()
         {
             // Arrange
-            const string message = "ReportsTo is required.";
             var validator = Properties<Employee>
                 .For(e => e.Address)
                 .Required()
@@ -256,7 +255,6 @@ namespace Simple.Validation.Tests.Validators
             validatorProvider.RegisterValidator(new SaveAddressValidator());
             Validator.SetValidatorProvider(validatorProvider);
 
-            var message = "This is a test failure.";
             var validator = Properties<Employee>
                 .For(e => e.Address)
                 .Required();
