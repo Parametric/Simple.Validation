@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Personnel.Sample;
 using Personnel.Sample.Comparers;
 using Personnel.Sample.Validators;
+using Simple.Validation.Validators;
 
 namespace Simple.Validation.Tests.Validators
 {

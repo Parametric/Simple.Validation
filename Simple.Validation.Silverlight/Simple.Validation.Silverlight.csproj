@@ -120,8 +120,8 @@
     <Compile Include="..\Simple.Validation\Validators\EnumerablePropertyValidator.cs">
       <Link>Validators\EnumerablePropertyValidator.cs</Link>
     </Compile>
-    <Compile Include="..\Simple.Validation\Validators\PropertyValidatorBase.cs">
-      <Link>Validators\PropertyValidatorBase.cs</Link>
+    <Compile Include="..\Simple.Validation\Validators\PropertyValidator.cs">
+      <Link>Validators\PropertyValidator.cs</Link>
     </Compile>
     <Compile Include="..\Simple.Validation\Validators\RangePropertyValidator.cs">
       <Link>Validators\RangePropertyValidator.cs</Link>
@@ -131,6 +131,9 @@
     </Compile>
     <Compile Include="..\Simple.Validation\Validators\StringPropertyValidator.cs">
       <Link>Validators\StringPropertyValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\Simple.Validation\Validators\StringPropertyValidatorExtensions.cs">
+      <Link>Validators\StringPropertyValidatorExtensions.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

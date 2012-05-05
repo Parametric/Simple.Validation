@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Simple.Validation.Validators
 {
-    public class ReferencePropertyValidator<T> : PropertyValidatorBase<T> 
+    public class ReferencePropertyValidator<T> : PropertyValidator<T, object> 
     {
         protected bool _required;
         protected Type PropertyType { get; set; }
@@ -87,7 +87,7 @@ namespace Simple.Validation.Validators
 
             var results = new List<ValidationResult>();
 
-            var propertyValue = base.GetPropertyValue<object>(value);
+            var propertyValue = base.GetPropertyValue(value);
             CheckRequired(value, results, propertyValue);
 
             if (_cascade && propertyValue !=null)

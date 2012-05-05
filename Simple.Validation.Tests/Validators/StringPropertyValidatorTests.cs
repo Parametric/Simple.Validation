@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Personnel.Sample;
+using Simple.Validation.Validators;
 
 namespace Simple.Validation.Tests.Validators
 {
@@ -37,11 +38,11 @@ namespace Simple.Validation.Tests.Validators
             // Assert
             if (isValid)
             {
-                results.AssertValidFor("LastName", TextValidationResultType.TextLengthOutOfRange);
+                results.AssertValidFor("LastName", null);
             }
             else
             {
-                results.AssertInvalidFor("LastName", TextValidationResultType.TextLengthOutOfRange);
+                results.AssertInvalidFor("LastName", null);
             }
         }
 
@@ -63,7 +64,7 @@ namespace Simple.Validation.Tests.Validators
 
             // Assert
 
-            results.AssertInvalidFor("LastName", TextValidationResultType.TextLengthOutOfRange);
+            results.AssertInvalidFor("LastName", null);
 
         }
 
@@ -96,11 +97,11 @@ namespace Simple.Validation.Tests.Validators
             // Assert
             if (isValid)
             {
-                results.AssertValidFor("LastName", TextValidationResultType.TextLengthOutOfRange);
+                results.AssertValidFor("LastName", null);
             }
             else
             {
-                results.AssertInvalidFor("LastName", TextValidationResultType.TextLengthOutOfRange);
+                results.AssertInvalidFor("LastName", null);
             }
         }
 
@@ -122,7 +123,7 @@ namespace Simple.Validation.Tests.Validators
 
             // Assert
 
-            results.AssertInvalidFor("LastName", TextValidationResultType.TextLengthOutOfRange);
+            results.AssertInvalidFor("LastName", null);
 
         }
 
@@ -173,8 +174,8 @@ namespace Simple.Validation.Tests.Validators
             var employee = new Employee();
             var validator = Properties<Employee>
                 .For(e => e.LastName)
-                .Required()
                 .IgnoreWhiteSpace()
+                .Required()
                 ;
 
             employee.LastName  = "     ";
@@ -210,11 +211,11 @@ namespace Simple.Validation.Tests.Validators
             // Assert
             if (isValid)
             {
-                results.AssertValidFor("LastName", TextValidationResultType.RegularExpressionMismatch);
+                results.AssertValidFor("LastName", null);
             }
             else
             {
-                results.AssertInvalidFor("LastName", TextValidationResultType.RegularExpressionMismatch);
+                results.AssertInvalidFor("LastName", null);
             }
 
         }
@@ -241,11 +242,11 @@ namespace Simple.Validation.Tests.Validators
             // Assert
             if (isValid)
             {
-                results.AssertValidFor("LastName", TextValidationResultType.RegularExpressionMismatch);
+                results.AssertValidFor("LastName", null);
             }
             else
             {
-                results.AssertInvalidFor("LastName", TextValidationResultType.RegularExpressionMismatch);
+                results.AssertInvalidFor("LastName", null);
             }
         }
 
@@ -259,7 +260,7 @@ namespace Simple.Validation.Tests.Validators
                 .Severity(ValidationResultSeverity.Warning);
 
             // Act
-            var results = validator.Validate(new Employee());
+            var results = validator.Validate(new Employee()).ToArray();
 
             // Assert
             Assert.That(results, Is.Not.Empty);

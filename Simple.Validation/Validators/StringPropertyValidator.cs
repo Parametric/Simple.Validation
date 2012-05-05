@@ -1,26 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace Simple.Validation.Validators
 {
-    public class StringPropertyValidator<T> : PropertyValidatorBase<T> 
+    public class StringPropertyValidator<T> : PropertyValidator<T, string>
     {
-        private string _message;
-        private ValidationResultSeverity _severity;
-
         private bool _ignoreWhiteSpace;
-        private bool _required;
-        private int? _minLength;
-        private int? _maxLength;
-        private string _regularExpression;
-        private Regex _regex;
-        private Func<string, bool> _isTruePredicate;
-        private Func<string, bool> _isFalsePredicate;
-        private object _type;
-        private Func<T, bool> _predicate;
 
         public override bool AppliesTo(string rulesSet)
         {
@@ -29,19 +17,25 @@ namespace Simple.Validation.Validators
 
         public StringPropertyValidator(Expression<Func<T, string>> propertyExpression) : base(propertyExpression)
         {
-            Severity(ValidationResultSeverity.Error);
         }
 
         public override IEnumerable<ValidationResult> Validate(T value)
         {
-            var propertyValue = base.GetPropertyValue<string>(value);
-            var results = Validate(propertyValue, value, _message);
+            var propertyValue = GetPropertyValue(value);
+            var results = base.Validate(value, propertyValue);
             return results;
+        }
+
+        protected override string GetPropertyValue(T context)
+        {
+            var baseResult = base.GetPropertyValue(context);
+            var result = GetValueToValidate(baseResult);
+            return result;
         }
 
         internal string GetValueToValidate(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (String.IsNullOrWhiteSpace(value))
                 if (_ignoreWhiteSpace)
                     return null;
 
@@ -51,85 +45,11 @@ namespace Simple.Validation.Validators
             return value;
         }
 
-        private IEnumerable<ValidationResult> Validate(string value, T context = default(T), string message = "")
+        protected override bool IsSpecified(string value)
         {
-            if (!CanValidate(context))
-                yield break;
-
-            var valueToValidate = GetValueToValidate(value);
-
-            if (_required && string.IsNullOrWhiteSpace(valueToValidate))
-                yield return NewValidationResult(context, message, TextValidationResultType.RequiredValueNotFound);
-
-            if (valueToValidate == null)
-                yield break;
-
-            if (_minLength.HasValue && valueToValidate.Length < _minLength)
-                yield return NewValidationResult(context, message, TextValidationResultType.TextLengthOutOfRange);
-
-            if (_maxLength.HasValue && valueToValidate.Length > _maxLength)
-                yield return NewValidationResult(context, message, TextValidationResultType.TextLengthOutOfRange);
-
-            if (!string.IsNullOrWhiteSpace(_regularExpression))
-            {
-                if (!IsRegExMatch(valueToValidate))
-                {
-                    yield return
-                        NewValidationResult(context, message, TextValidationResultType.RegularExpressionMismatch);
-                }
-            }
-
-            if (_isTruePredicate != null && !_isTruePredicate(valueToValidate))
-                yield return NewValidationResult(context, message, null);
-
-            if (_isFalsePredicate != null && _isFalsePredicate(valueToValidate))
-                yield return NewValidationResult(context, message, null);
+            return !String.IsNullOrWhiteSpace(value);
         }
 
-        private bool CanValidate(T context)
-        {
-            return _predicate == null || _predicate(context);
-        }
-
-        private ValidationResult NewValidationResult(object context, string message, object type)
-        {
-            return new ValidationResult()
-                       {
-                           Context = context,
-                           Message = message,
-                           PropertyName = PropertyInfo.Name,
-                           Type = _type ?? type,
-                           Severity = _severity,
-                       };
-        }
-
-        private bool IsRegExMatch(string value)
-        {
-            if (_regex == null)
-                throw new InvalidOperationException();
-
-            return _regex.IsMatch(value);
-        }
-
-        public StringPropertyValidator<T> Length(int? minLength, int? maxLength = null)
-        {
-            this._minLength = minLength;
-            this._maxLength = maxLength;
-            return this;
-        }
-
-        public StringPropertyValidator<T> Required()
-        {
-            this._required = true;
-            return this;
-        }
-
-        public StringPropertyValidator<T> NotRequired()
-        {
-            this._required = false;
-            return this;
-        }
-    
         public StringPropertyValidator<T> IgnoreWhiteSpace()
         {
             this._ignoreWhiteSpace = true;
@@ -142,47 +62,57 @@ namespace Simple.Validation.Validators
             return this;
         }
 
-        public StringPropertyValidator<T> Matches(string regularExpression, RegexOptions options = RegexOptions.None)
+        public StringPropertyValidator<T> Required()
         {
-            this._regularExpression = regularExpression;
-            if (!string.IsNullOrWhiteSpace(regularExpression))
-                _regex = new Regex(regularExpression, options);
+            base.Required();
             return this;
         }
 
-        public StringPropertyValidator<T> Severity(ValidationResultSeverity validationResultSeverity)
+        public StringPropertyValidator<T> NotRequired()
         {
-            this._severity = validationResultSeverity;
+            base.NotRequired();
             return this;
         }
 
-        public StringPropertyValidator<T> IsTrue(Func<string, bool> predicate)
+        public StringPropertyValidator<T> Severity(ValidationResultSeverity severity)
         {
-            _isTruePredicate = predicate;
+            base.Severity(severity);
             return this;
         }
 
-        public StringPropertyValidator<T> IsFalse(Func<string, bool> predicate)
+        public StringPropertyValidator<T> Assert(Func<T, string, bool> assertion)
         {
-            _isFalsePredicate = predicate;
+            base.Assert(assertion);
             return this;
         }
 
         public StringPropertyValidator<T> Message(string format, params object[] arguments)
         {
-            _message = string.Format(format, arguments);
+            base.Message(format, arguments);
             return this;
         }
 
         public StringPropertyValidator<T> Type(object type)
         {
-            _type = type;
+            base.Type(type);
             return this;
         }
 
         public StringPropertyValidator<T> If(Func<T, bool> predicate)
         {
-            _predicate = predicate;
+            base.If(predicate);
+            return this;
+        }
+
+        public StringPropertyValidator<T> IsTrue(Func<string, bool> predicate)
+        {
+            base.Assert((t, s) => predicate(s));
+            return this;
+        }
+
+        public StringPropertyValidator<T> IsFalse(Func<string, bool> predicate)
+        {
+            base.Assert((t, s) => !predicate(s));
             return this;
         }
     }

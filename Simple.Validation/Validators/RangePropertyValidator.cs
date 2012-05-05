@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Simple.Validation.Validators
 {
-    public class RangePropertyValidator<TContext> : PropertyValidatorBase<TContext> 
+    public class RangePropertyValidator<TContext> : PropertyValidator<TContext, IComparable> 
     {
         private string _message;
         private IComparable _minValue;
@@ -28,7 +28,7 @@ namespace Simple.Validation.Validators
 
         public override IEnumerable<ValidationResult> Validate(TContext value)
         {
-            var propertyValue = base.GetPropertyValue<IComparable>(value); 
+            var propertyValue = base.GetPropertyValue(value); 
             return Validate(propertyValue, value, _message);
         }
 

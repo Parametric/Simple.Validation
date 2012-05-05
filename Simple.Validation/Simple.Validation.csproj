@@ -54,7 +54,7 @@
     <Compile Include="Validators\EnumerablePropertyValidator.cs" />
     <Compile Include="Comparers\EqualityComparerAdapter.cs" />
     <Compile Include="Validators\AncestorTypeValidator.cs" />
-    <Compile Include="Validators\PropertyValidatorBase.cs" />
+    <Compile Include="Validators\PropertyValidator.cs" />
     <Compile Include="Validators\RangePropertyValidator.cs" />
     <Compile Include="RulesSetValidatorBase.cs" />
     <Compile Include="Validators\ReferencePropertyValidator.cs" />
@@ -69,6 +69,7 @@
     <Compile Include="ValidationResultSeverity.cs" />
     <Compile Include="ValidationResultType.cs" />
     <Compile Include="Validator.cs" />
+    <Compile Include="Validators\StringPropertyValidatorExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
