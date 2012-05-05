@@ -85,27 +85,27 @@ namespace Simple.Validation.Validators
             return results;
         }
 
-        protected void SetRequired(bool value)
+        private void SetRequired(bool value)
         {
             _required = value;
         }
 
-        protected void SetSeverity(ValidationResultSeverity severity)
+        private void SetSeverity(ValidationResultSeverity severity)
         {
             _severity = severity;
         }
 
-        protected void SetMessage(string format, params object[] arguments)
+        private void SetMessage(string format, params object[] arguments)
         {
             _message = string.Format(format, arguments);
         }
 
-        protected void SetType(object type)
+        private void SetType(object type)
         {
             _type = type;
         }
 
-        protected void SetPredicate(Func<TContext, bool> predicate)
+        private void SetPredicate(Func<TContext, bool> predicate)
         {
             _predicate = predicate;
         }

@@ -85,27 +85,6 @@ namespace Simple.Validation.Validators
             }
         }
 
-        private bool IsDistinct(IEnumerable<object> enumerable, IEqualityComparer<object> comparer )
-        {
-            bool result;
-            if (comparer == null)
-                result = enumerable.Count() == enumerable.Distinct().Count();
-            else
-                result = enumerable.Count() == enumerable.Distinct(comparer).Count();
-            return result;
-        }
-
-        public EnumerablePropertyValidator<T> Count(int? minCount, int? maxCount = null)
-        {
-            if (minCount.HasValue)
-                Assert((t, list) => list.Count() >= minCount);
-
-            if (maxCount.HasValue)
-                Assert((t, list) => list.Count() <= maxCount);
-
-            return this;
-        }
-
         public EnumerablePropertyValidator<T> Cascade(params string[] rulesSets)
         {
             _cascade = true;
@@ -121,11 +100,41 @@ namespace Simple.Validation.Validators
             return this;
         }
 
+        protected PropertyValidator<T, IEnumerable<object>> AsBaseType()
+        {
+            return this;
+        } 
+
+        public EnumerablePropertyValidator<T> Unique()
+        {
+            AsBaseType().Unique();
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Unique<TElement>(IEqualityComparer<TElement> comparer)
+        {
+            var adapter = new EqualityComparerAdapter<T, TElement>(comparer);
+            AsBaseType().Unique(adapter);
+            return this;
+        }
+
+        public EnumerablePropertyValidator<T> Unique<TElement>(Func<TElement, TElement, bool> predicate )
+        {
+            var comparer = new PredicateEqualityComparer<TElement>(predicate);
+            return this.Unique(comparer);
+        }
+
+        public EnumerablePropertyValidator<T> Unique<TElementType>(Func<TElementType, IComparable> selector)
+        {
+            var comparer = new SelectorEqualityComparer<TElementType>(selector);
+            return this.Unique(comparer);
+        }
+
         public new EnumerablePropertyValidator<T> Message(string format, params object[] arguments)
         {
             base.Message(format, arguments);
             return this;
-        } 
+        }
 
         public new EnumerablePropertyValidator<T> NotRequired()
         {
@@ -139,38 +148,9 @@ namespace Simple.Validation.Validators
             return this;
         }
 
-        public EnumerablePropertyValidator<T> Unique()
-        {
-            return Unique<object>((left, right) => left.Equals(right));
-        }
-
-        public EnumerablePropertyValidator<T> Unique<TElementType>(IEqualityComparer<TElementType> comparer)
-        {
-            Assert((t, list) =>
-            {
-                var adapter = new EqualityComparerAdapter<T, TElementType>(comparer);
-                var result = IsDistinct(list, adapter);
-                return result;
-            });
-
-            return this;
-        }
-
-        public EnumerablePropertyValidator<T> Unique<TElementType>(Func<TElementType, TElementType, bool> predicate )
-        {
-            var comparer = new PredicateEqualityComparer<TElementType>(predicate);
-            return Unique(comparer);
-        }
-
-        public EnumerablePropertyValidator<T> Unique<TElementType>(Func<TElementType, IComparable> selector)
-        {
-            var comparer = new SelectorEqualityComparer<TElementType>(selector);
-            return Unique(comparer);
-        }
-
         public new EnumerablePropertyValidator<T> Severity(ValidationResultSeverity severity)
         {
-            base.SetSeverity(severity);
+            base.Severity(severity);
             return this;
         }
 

@@ -105,14 +105,17 @@
     <Compile Include="..\Simple.Validation\ValidationResultSeverity.cs">
       <Link>ValidationResultSeverity.cs</Link>
     </Compile>
-    <Compile Include="..\Simple.Validation\ValidationResultType.cs">
-      <Link>ValidationResultType.cs</Link>
-    </Compile>
     <Compile Include="..\Simple.Validation\Validator.cs">
       <Link>Validator.cs</Link>
     </Compile>
     <Compile Include="..\Simple.Validation\Validators\AncestorTypeValidator.cs">
       <Link>Validators\AncestorTypeValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\Simple.Validation\Validators\BooleanPropertyExtensions.cs">
+      <Link>Validators\BooleanPropertyExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Simple.Validation\Validators\ComparablePropertyExtensions.cs">
+      <Link>Validators\ComparablePropertyExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Simple.Validation\Validators\CompositeValidator.cs">
       <Link>Validators\CompositeValidator.cs</Link>
@@ -120,11 +123,11 @@
     <Compile Include="..\Simple.Validation\Validators\EnumerablePropertyValidator.cs">
       <Link>Validators\EnumerablePropertyValidator.cs</Link>
     </Compile>
+    <Compile Include="..\Simple.Validation\Validators\EnumerablePropertyValidatorExtensions.cs">
+      <Link>Validators\EnumerablePropertyValidatorExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Simple.Validation\Validators\PropertyValidator.cs">
       <Link>Validators\PropertyValidator.cs</Link>
-    </Compile>
-    <Compile Include="..\Simple.Validation\Validators\RangePropertyValidator.cs">
-      <Link>Validators\RangePropertyValidator.cs</Link>
     </Compile>
     <Compile Include="..\Simple.Validation\Validators\ReferencePropertyValidator.cs">
       <Link>Validators\ReferencePropertyValidator.cs</Link>
