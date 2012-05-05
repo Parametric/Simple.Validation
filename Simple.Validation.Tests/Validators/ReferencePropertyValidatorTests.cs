@@ -158,7 +158,7 @@ namespace Simple.Validation.Tests.Validators
             Assert.That(result.Context, Is.EqualTo(employee));
             Assert.That(result.PropertyName, Is.EqualTo("Address.Line1"));
             Assert.That(result.Severity, Is.EqualTo(ValidationResultSeverity.Error));
-            Assert.That(result.Type, Is.EqualTo(TextValidationResultType.RequiredValueNotFound));
+            Assert.That(result.Type, Is.EqualTo(null));
         }
 
         [Test]
@@ -294,7 +294,7 @@ namespace Simple.Validation.Tests.Validators
             Assert.That(result.Context, Is.EqualTo(employee));
             Assert.That(result.PropertyName, Is.EqualTo("Address.Line1"));
             Assert.That(result.Severity, Is.EqualTo(ValidationResultSeverity.Error));
-            Assert.That(result.Type, Is.EqualTo(TextValidationResultType.RequiredValueNotFound));
+            Assert.That(result.Type, Is.EqualTo(null));
         }
 
         [Test]

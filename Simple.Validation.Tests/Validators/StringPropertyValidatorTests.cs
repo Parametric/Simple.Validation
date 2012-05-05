@@ -159,11 +159,11 @@ namespace Simple.Validation.Tests.Validators
             // Assert
             if (isValid)
             {
-                results.AssertValidFor("LastName", TextValidationResultType.RequiredValueNotFound);
+                results.AssertValidFor("LastName", null);
             }
             else
             {
-                results.AssertInvalidFor("LastName", TextValidationResultType.RequiredValueNotFound);
+                results.AssertInvalidFor("LastName", null);
             }
         }
 
@@ -185,7 +185,7 @@ namespace Simple.Validation.Tests.Validators
 
             // Assert
 
-            results.AssertInvalidFor("LastName", TextValidationResultType.RequiredValueNotFound);
+            results.AssertInvalidFor("LastName", null);
 
         }
 

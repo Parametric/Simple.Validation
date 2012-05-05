@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using Personnel.Sample;
+using Simple.Validation.Validators;
 
 namespace Simple.Validation.Tests.Validators
 {
@@ -26,27 +27,20 @@ namespace Simple.Validation.Tests.Validators
                 ;
 
             if (minValue.HasValue)
-                validator.MinValue(minValue.Value);
-
-            if (lowerInclusive)
-                validator.LowerInclusive();
-            else
-                validator.LowerExclusive();
-
+                validator.MinValue(minValue.Value, lowerInclusive);
 
             // Act
             var results = validator.Validate(employee);
 
             // Assert
             
-            const RangeValidationResultType type = RangeValidationResultType.ValueOutOfRange;
             if (isValid)
             {
-                results.AssertValidFor(propertyName, type);
+                results.AssertValidFor(propertyName, null);
             }
             else
             {
-                results.AssertInvalidFor(propertyName, type);
+                results.AssertInvalidFor(propertyName, null);
             }
         }
 
@@ -68,25 +62,19 @@ namespace Simple.Validation.Tests.Validators
                 ;
 
             if (maxValue.HasValue)
-                validator.MaxValue(maxValue.Value);
-
-            if (upperInclusive)
-                validator.UpperInclusive();
-            else
-                validator.UpperExclusive();
-
+                validator.MaxValue(maxValue.Value, upperInclusive);
 
             // Act
             var results = validator.Validate(employee);
+
             // Assert
-            const RangeValidationResultType type = RangeValidationResultType.ValueOutOfRange;
             if (isValid)
             {
-                results.AssertValidFor(propertyName, type);
+                results.AssertValidFor(propertyName, null);
             }
             else
             {
-                results.AssertInvalidFor(propertyName, type);
+                results.AssertInvalidFor(propertyName, null);
             }
         }
 

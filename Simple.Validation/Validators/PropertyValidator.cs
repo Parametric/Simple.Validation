@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Simple.Validation.Validators
 {
-    public abstract class PropertyValidator<TContext, TProperty> : IValidator<TContext>
+    public class PropertyValidator<TContext, TProperty> : IValidator<TContext>
     {
         private ValidationResultSeverity _severity;
         private string _message;
@@ -17,7 +17,7 @@ namespace Simple.Validation.Validators
 
         protected List<Func<TContext, TProperty, bool>> Assertions { get; private set; }
 
-        protected PropertyValidator(LambdaExpression  propertyExpression)
+        public PropertyValidator(LambdaExpression  propertyExpression)
         {
             PropertyExpression = propertyExpression;
             PropertyInfo = Expressions.GetPropertyInfoFromExpression(propertyExpression);
@@ -42,13 +42,13 @@ namespace Simple.Validation.Validators
                 yield break;
 
             if (_required && !IsSpecified(value))
-                yield return NewValidationResult(context, _message, TextValidationResultType.RequiredValueNotFound);
+                yield return NewValidationResult(context);
 
             if (value == null)
                 yield break;
 
             if (Assertions.Any(f => f.Invoke(context, value) == false))
-                yield return NewValidationResult(context, _message, null);
+                yield return NewValidationResult(context);
         }
 
         protected ValidationResult NewValidationResult(object context)
@@ -63,18 +63,6 @@ namespace Simple.Validation.Validators
             };
         }
 
-        protected ValidationResult NewValidationResult(object context, string message, object type)
-        {
-            return new ValidationResult()
-            {
-                Context = context,
-                Message = message,
-                PropertyName = PropertyInfo.Name,
-                Type = _type ?? type,
-                Severity = _severity,
-            };
-        }
-
         protected virtual bool IsSpecified(TProperty value)
         {
             return value != null;
@@ -85,7 +73,10 @@ namespace Simple.Validation.Validators
             return _predicate == null || _predicate(context);
         }
 
-        public abstract bool AppliesTo(string rulesSet);
+        public virtual bool AppliesTo(string rulesSet)
+        {
+            return true;
+        }
 
         public virtual IEnumerable<ValidationResult> Validate(TContext value)
         {

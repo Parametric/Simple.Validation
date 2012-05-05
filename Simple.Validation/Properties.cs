@@ -7,9 +7,9 @@ namespace Simple.Validation
 {
     public static class Properties<T>
     {
-        public static RangePropertyValidator<T> For(Expression<Func<T, IComparable>> propertyExpression)
+        public static PropertyValidator<T, IComparable> For(Expression<Func<T, IComparable>> propertyExpression)
         {
-            return new RangePropertyValidator<T>(propertyExpression);
+            return new PropertyValidator<T, IComparable>(propertyExpression);
         }
 
         public static StringPropertyValidator<T> For(Expression<Func<T, string>> propertyExpression)

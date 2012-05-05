@@ -10,7 +10,6 @@ namespace Simple.Validation.Validators
 {
     public class EnumerablePropertyValidator<T> : PropertyValidator<T, IEnumerable<object>>
     {
-
         private bool _cascade;
         private string[] _cascadeRulesSets;
         private Type _cascadePropertyType;

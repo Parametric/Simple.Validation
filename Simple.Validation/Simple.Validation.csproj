@@ -50,12 +50,13 @@
     <Compile Include="Expressions.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="ValidationResultExtensions.cs" />
+    <Compile Include="Validators\BooleanPropertyExtensions.cs" />
+    <Compile Include="Validators\ComparablePropertyExtensions.cs" />
     <Compile Include="Validators\CompositeValidator.cs" />
     <Compile Include="Validators\EnumerablePropertyValidator.cs" />
     <Compile Include="Comparers\EqualityComparerAdapter.cs" />
     <Compile Include="Validators\AncestorTypeValidator.cs" />
     <Compile Include="Validators\PropertyValidator.cs" />
-    <Compile Include="Validators\RangePropertyValidator.cs" />
     <Compile Include="RulesSetValidatorBase.cs" />
     <Compile Include="Validators\ReferencePropertyValidator.cs" />
     <Compile Include="Validators\StringPropertyValidator.cs" />

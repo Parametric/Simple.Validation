@@ -7,14 +7,15 @@ namespace Simple.Validation.Validators
 {
     public class ReferencePropertyValidator<T> : PropertyValidator<T, object> 
     {
-        protected bool _required;
-        protected Type PropertyType { get; set; }
-        protected bool _cascade;
-        private string _message;
-        private ValidationResultSeverity _severity = ValidationResultSeverity.Error;
-        private object _type;
-        private Func<T, bool> _predicate;
-        protected string[] RulesSets { get; set; }
+        private Type PropertyType { get; set; }
+        private bool _cascade;
+        private string[] RulesSets { get; set; }
+
+        public ReferencePropertyValidator(Expression<Func<T, object>> propertyExpression)
+            : base(propertyExpression)
+        {
+            Severity(ValidationResultSeverity.Error);
+        }
 
         public override bool AppliesTo(string rulesSet)
         {
@@ -50,55 +51,54 @@ namespace Simple.Validation.Validators
             return this;
         }
 
-        public ReferencePropertyValidator<T> Required()
+        public new ReferencePropertyValidator<T> Required()
         {
-            this._required = true;
+            base.Required();
             return this;
         }
 
-        public ReferencePropertyValidator<T> NotRequired()
+        public new ReferencePropertyValidator<T> NotRequired()
         {
-            this._required = false;
+            base.NotRequired();
             return this;
         } 
 
-        public ReferencePropertyValidator<T> Message(string format, params object[] arguments)
+        public new ReferencePropertyValidator<T> Message(string format, params object[] arguments)
         {
-            _message = string.Format(format, arguments);
+            base.Message(format, arguments);
             return this;
         }
 
-        public ReferencePropertyValidator<T> Severity(ValidationResultSeverity severity)
+        public new ReferencePropertyValidator<T> Severity(ValidationResultSeverity severity)
         {
-            _severity = severity;
+            base.Severity(severity);
             return this;
         } 
 
-        public ReferencePropertyValidator<T> Type(object type)
+        public new ReferencePropertyValidator<T> Type(object type)
         {
-            _type = type;
+            base.Type(type);
             return this;
-        } 
+        }
+
+        public new ReferencePropertyValidator<T> If(Func<T, bool> predicate)
+        {
+            base.If(predicate);
+            return this;
+        }
 
         public override IEnumerable<ValidationResult> Validate(T value)
         {
+            var results = base.Validate(value).ToList();
             if (!CanValidate(value))
-                return Enumerable.Empty<ValidationResult>();
-
-            var results = new List<ValidationResult>();
+                return results;
 
             var propertyValue = base.GetPropertyValue(value);
-            CheckRequired(value, results, propertyValue);
 
             if (_cascade && propertyValue !=null)
                 PerformCascadeValidate(value, results, propertyValue);
 
             return results;
-        }
-
-        private bool CanValidate(T value)
-        {
-            return _predicate == null || _predicate(value);
         }
 
         private void PerformCascadeValidate(T valueBeingValidated, List<ValidationResult> results, object propertyValue)
@@ -123,28 +123,5 @@ namespace Simple.Validation.Validators
                 PropertyInfo.Name;
         }
 
-        private void CheckRequired(T value, ICollection<ValidationResult> results, object propertyValue)
-        {
-            if (_required && propertyValue == null)
-                results.Add(new ValidationResult()
-                                {
-                                    Context = value,
-                                    Message = _message,
-                                    PropertyName = PropertyInfo.Name,
-                                    Severity = _severity,
-                                    Type = _type,
-                                });
-        }
-
-        public ReferencePropertyValidator(Expression<Func<T, object>> propertyExpression) : base(propertyExpression)
-        {
-            Severity(ValidationResultSeverity.Error);
-        }
-
-        public ReferencePropertyValidator<T> If(Func<T, bool> predicate)
-        {
-            _predicate = predicate;
-            return this;
-        }
     }
 }
