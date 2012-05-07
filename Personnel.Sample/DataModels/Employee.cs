@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Personnel.Sample
+namespace Personnel.Sample.DataModels
 {
     public class Employee
     {
@@ -20,6 +20,8 @@ namespace Personnel.Sample
         [Range(18, 65)]
         public int Age { get; set; }
 
+        public DateTime BirthDate { get; set; }
+
         public double? Salary { get; set; }
 
         public Manager ReportsTo { get; set; }
@@ -29,5 +31,9 @@ namespace Personnel.Sample
         public IList<ContactInfo> ContactInfo { get; set; }
 
         public string Title { get; set; }
+
+        public bool IsSalaried { get; set; }
+
+        public bool IsHourly { get; set; }
     }
 }

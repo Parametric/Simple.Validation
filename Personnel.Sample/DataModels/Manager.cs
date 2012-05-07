@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Personnel.Sample
+namespace Personnel.Sample.DataModels
 {
     public class Manager : Employee
     {

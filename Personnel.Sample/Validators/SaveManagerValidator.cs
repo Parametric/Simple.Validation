@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Personnel.Sample.DataModels;
 using Simple.Validation;
 using Simple.Validation.Validators;
 

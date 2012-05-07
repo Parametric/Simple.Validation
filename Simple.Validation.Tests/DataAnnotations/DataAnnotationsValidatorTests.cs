@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using Personnel.Sample;
+using Personnel.Sample.DataModels;
 using Simple.Validation.DataAnnotations;
 
 namespace Simple.Validation.Tests.DataAnnotations

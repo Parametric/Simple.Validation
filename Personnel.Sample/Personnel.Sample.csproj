@@ -43,20 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Address.cs" />
+    <Compile Include="DataModels\Address.cs" />
     <Compile Include="Comparers\ContactInfoTypeEqualityComparer.cs" />
     <Compile Include="ValidationConfiguration.cs" />
-    <Compile Include="ContactInfo.cs" />
+    <Compile Include="DataModels\ContactInfo.cs" />
     <Compile Include="RulesSets.cs" />
-    <Compile Include="PhoneNumber.cs" />
+    <Compile Include="DataModels\PhoneNumber.cs" />
     <Compile Include="Validators\SaveAddressValidator.cs" />
     <Compile Include="Validators\SaveEmployeeValidator.cs" />
-    <Compile Include="Employee.cs" />
-    <Compile Include="Manager.cs" />
+    <Compile Include="DataModels\Employee.cs" />
+    <Compile Include="DataModels\Manager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validators\RulesSetEmployeeValidator.cs" />
     <Compile Include="Validators\SaveContactInfoValidator.cs" />
+    <Compile Include="Validators\SaveEmployeeViewModelValidator.cs" />
     <Compile Include="Validators\SaveManagerValidator.cs" />
+    <Compile Include="ViewModels\EditEmployeeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Validation\Simple.Validation.csproj">

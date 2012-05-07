@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Personnel.Sample;
+using Personnel.Sample.DataModels;
 using Personnel.Sample.Validators;
 using Simple.Validation.Validators;
 

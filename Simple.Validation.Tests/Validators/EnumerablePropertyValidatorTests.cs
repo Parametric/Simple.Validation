@@ -5,6 +5,7 @@ using FizzWare.NBuilder;
 using NUnit.Framework;
 using Personnel.Sample;
 using Personnel.Sample.Comparers;
+using Personnel.Sample.DataModels;
 using Personnel.Sample.Validators;
 using Simple.Validation.Validators;
 
@@ -603,6 +604,7 @@ namespace Simple.Validation.Tests.Validators
                 .Do(m => m.Address = Builder<Address>.CreateNew().Build())
                 .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
                 .Do(m => m.ReportsTo = manager)
+                .Do(m => m.IsSalaried = true)
                 .Do(m => m.Reports = Builder<Employee>
                     .CreateListOfSize(10)
                     .All()
@@ -610,6 +612,7 @@ namespace Simple.Validation.Tests.Validators
                     .Do(e => e.ReportsTo = m)
                     .Do(e => e.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
                     .Do(e => e.Age += 20)
+                    .Do(e => e.IsHourly = true)
                     .Build())
                 .Build();
 
@@ -698,6 +701,7 @@ namespace Simple.Validation.Tests.Validators
                 .Do(m => m.Address = Builder<Address>.CreateNew().Build())
                 .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
                 .Do(m => m.ReportsTo = manager)
+                .Do(m => m.IsSalaried = true)
                 .Do(m => m.Reports = Builder<Employee>.CreateListOfSize(10).Build())
                 .Build();
 
@@ -732,6 +736,7 @@ namespace Simple.Validation.Tests.Validators
                 .Do(m => m.Address = Builder<Address>.CreateNew().Build())
                 .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
                 .Do(m => m.ReportsTo = manager)
+                .Do(m => m.IsSalaried = true)
                 .Do(m => m.Reports = new List<Employee>())
                 .Build();
 

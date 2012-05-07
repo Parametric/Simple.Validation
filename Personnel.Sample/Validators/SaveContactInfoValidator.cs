@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Personnel.Sample.DataModels;
 using Simple.Validation;
 using Simple.Validation.Validators;
 

@@ -1,4 +1,4 @@
-namespace Personnel.Sample
+namespace Personnel.Sample.DataModels
 {
     public class Address
     {

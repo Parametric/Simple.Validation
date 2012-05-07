@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Personnel.Sample;
+using Personnel.Sample.DataModels;
 using Simple.Validation.Validators;
 
 namespace Simple.Validation.Tests.Validators

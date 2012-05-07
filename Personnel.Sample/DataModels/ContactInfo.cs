@@ -1,5 +1,5 @@
 ﻿
-namespace Personnel.Sample
+namespace Personnel.Sample.DataModels
 {
     public class ContactInfo
     {
