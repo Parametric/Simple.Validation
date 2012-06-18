@@ -14,6 +14,7 @@ namespace Simple.Validation.Validators
         private object _type;
 
         private Func<TContext, bool> _predicate;
+        private Func<TContext, TProperty, string> _messageFunc;
 
         protected List<Func<TContext, TProperty, bool>> Assertions { get; private set; }
 
@@ -42,25 +43,32 @@ namespace Simple.Validation.Validators
                 yield break;
 
             if (_required && !IsSpecified(value))
-                yield return NewValidationResult(context);
+                yield return NewValidationResult(context, value);
 
             if (value == null)
                 yield break;
 
             if (Assertions.Any(f => f.Invoke(context, value) == false))
-                yield return NewValidationResult(context);
+                yield return NewValidationResult(context, value);
         }
 
-        protected ValidationResult NewValidationResult(object context)
+        protected ValidationResult NewValidationResult(TContext context, TProperty value)
         {
             return new ValidationResult()
             {
                 Context = context,
-                Message = _message,
+                Message = GetMessage(context, value),
                 PropertyName = PropertyInfo.Name,
                 Type = _type ,
                 Severity = _severity,
             };
+        }
+
+        private string GetMessage(TContext context, TProperty value)
+        {
+            if (_messageFunc != null)
+                return _messageFunc(context, value);
+            return _message;
         }
 
         protected virtual bool IsSpecified(TProperty value)
@@ -110,14 +118,6 @@ namespace Simple.Validation.Validators
             _predicate = predicate;
         }
 
-
-
-
-
-
-
-
-
         public PropertyValidator<TContext, TProperty> Required()
         {
             SetRequired(true);
@@ -145,6 +145,12 @@ namespace Simple.Validation.Validators
         public PropertyValidator<TContext, TProperty> Message(string format, params object[] arguments)
         {
             SetMessage(format, arguments);
+            return this;
+        }
+
+        public PropertyValidator<TContext, TProperty> Message(Func<TContext, TProperty, string> messageFunc)
+        {
+            _messageFunc = messageFunc;
             return this;
         }
 

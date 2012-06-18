@@ -351,6 +351,29 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
+        public void Message_UsingLambda()
+        {
+            // Arrange
+            string customMessage = null;
+            var validator = Properties<Employee>
+                .For(e => e.FirstName)
+                .Required()
+                .Message((context, value) =>
+                             {
+                                 customMessage = string.Format("Custom Message format '{0}'", value);
+                                 return customMessage;
+                             });
+
+            // Act
+            var results = validator.Validate(new Employee());
+
+            // Assert
+            Assert.That(results, Is.Not.Empty);
+            Assert.That(customMessage, Is.Not.Null);
+            Assert.That(results.First().Message, Is.EqualTo(customMessage));
+        }
+
+        [Test]
         public void If_PredicateIsTrue_ShouldValidate()
         {
             // Arrange
