@@ -63,6 +63,9 @@
     <Compile Include="..\Simple.Validation.Ninject\NinjectValidatorProvider.cs">
       <Link>NinjectValidatorProvider.cs</Link>
     </Compile>
+    <Compile Include="..\Simple.Validation.Ninject\SimpleValidationNinjectModule.cs">
+      <Link>SimpleValidationNinjectModule.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

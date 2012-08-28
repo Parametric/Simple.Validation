@@ -75,11 +75,17 @@
     <Compile Include="..\Simple.Validation\DataAnnotations\ReflectionExtensions.cs">
       <Link>DataAnnotations\ReflectionExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Simple.Validation\DefaultValidationEngine.cs">
+      <Link>DefaultValidationEngine.cs</Link>
+    </Compile>
     <Compile Include="..\Simple.Validation\DefaultValidatorProvider.cs">
       <Link>DefaultValidatorProvider.cs</Link>
     </Compile>
     <Compile Include="..\Simple.Validation\Expressions.cs">
       <Link>Expressions.cs</Link>
+    </Compile>
+    <Compile Include="..\Simple.Validation\IValidationEngine.cs">
+      <Link>IValidationEngine.cs</Link>
     </Compile>
     <Compile Include="..\Simple.Validation\IValidator.cs">
       <Link>IValidator.cs</Link>
@@ -92,6 +98,9 @@
     </Compile>
     <Compile Include="..\Simple.Validation\RulesSetValidatorBase.cs">
       <Link>RulesSetValidatorBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Simple.Validation\ValidationEngineExtensions.cs">
+      <Link>ValidationEngineExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Simple.Validation\ValidationException.cs">
       <Link>ValidationException.cs</Link>
