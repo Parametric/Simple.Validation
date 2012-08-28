@@ -47,8 +47,11 @@
     <Compile Include="Comparers\PredicateEqualityComparer.cs" />
     <Compile Include="Comparers\SelectorEqualityComparer.cs" />
     <Compile Include="DataAnnotations\ReflectionExtensions.cs" />
+    <Compile Include="DefaultValidationEngine.cs" />
     <Compile Include="Expressions.cs" />
+    <Compile Include="IValidationEngine.cs" />
     <Compile Include="Properties.cs" />
+    <Compile Include="ValidationEngineExtensions.cs" />
     <Compile Include="ValidationResultExtensions.cs" />
     <Compile Include="Validators\BooleanPropertyExtensions.cs" />
     <Compile Include="Validators\ComparablePropertyExtensions.cs" />
