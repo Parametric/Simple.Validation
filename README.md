@@ -14,3 +14,5 @@ You can call Validator.Validate(yourObject) to get a list of validation results.
 You need to first [create an implementation of IValidator&lt;T&gt;](Simple.Validation/wiki/IValidator) and [register it](Simple.Validation/wiki/DefaultValidator).
 
 There are a variety of [Built-in validators](Simple.Validation/wiki/Validators) to help you get started.
+
+View the [Releases](Simple.Validation/wiki/Releases)
