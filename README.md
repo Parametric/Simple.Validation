@@ -3,7 +3,7 @@ Run this from the Visual Studio Package Manager Console:
 Install-Package Simple.Validation
 
 Simple.Validation is composed of 3 basic parts. 
-[Simple.Validation/wiki/Validator](Validator) is a static class containing the Validate() method which will give you [validation results](Simple.Validation/wiki/ValidationResult) for your object and the specified rules sets. 
+[Validator](Simple.Validation/wiki/Validator) is a static class containing the Validate() method which will give you [validation results](Simple.Validation/wiki/ValidationResult) for your object and the specified rules sets. 
 Rules set names are arbitrary for your application. 
 [Validator](Simple.Validation/wiki/Validator) will reach into the configured [ValidatorProvider](Simple.Validation/wiki/DefaultValidatorProvider) and retrieve validators applicable to your object. 
 It will then filter for the list of [validators](Simple.Validation/wiki/IValidator) that AppliesTo one of the requested rules sets.
