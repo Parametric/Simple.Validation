@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FizzWare.NBuilder;
+using NSubstitute;
 using NUnit.Framework;
 using Personnel.Sample;
 using Personnel.Sample.Comparers;
@@ -14,6 +15,21 @@ namespace Simple.Validation.Tests.Validators
     [TestFixture]
     public class EnumerablePropertyValidatorTests
     {
+        protected DefaultValidatorProvider ValidatorProvider { get; set; }
+        protected IValidationEngine ValidationEngine { get; set; }
+
+        [SetUp]
+        public void BeforeAnyTestRuns()
+        {
+
+            this.ValidatorProvider = new DefaultValidatorProvider();
+            this.ValidatorProvider.RegisterValidator(new SaveEmployeeValidator());
+            this.ValidatorProvider.RegisterValidator(new SaveManagerValidator());
+
+            this.ValidationEngine = new DefaultValidationEngine(this.ValidatorProvider);
+            Simple.Validation.Validator.SetValidationEngine(this.ValidationEngine);
+        }
+
         [Test]
         public void Required()
         {
@@ -585,10 +601,6 @@ namespace Simple.Validation.Tests.Validators
         public void Cascade_Enumerable_ValidValues()
         {
             // Arrange
-            var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
-            validatorProvider.RegisterValidator(new SaveManagerValidator());
-            Validator.SetValidatorProvider(validatorProvider);
 
             var validator = Properties<Manager>
                 .For(e => e.Reports)
@@ -613,6 +625,7 @@ namespace Simple.Validation.Tests.Validators
                     .Do(e => e.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
                     .Do(e => e.Age += 20)
                     .Do(e => e.IsHourly = true)
+                    .Do(e => e.IsSalaried = false)
                     .Build())
                 .Build();
 
@@ -628,10 +641,8 @@ namespace Simple.Validation.Tests.Validators
         public void Cascade_Enumerable_InValidValues()
         {
             // Arrange
-            var validatorProvider = new DefaultValidatorProvider();
-            validatorProvider.RegisterValidator(new SaveEmployeeValidator());
-            validatorProvider.RegisterValidator(new SaveManagerValidator());
-            Validator.SetValidatorProvider(validatorProvider);
+            this.ValidationEngine = Substitute.For<IValidationEngine>();
+            Simple.Validation.Validator.SetValidationEngine(this.ValidationEngine);
 
             var validator = Properties<Manager>
                 .For(e => e.Reports)
@@ -643,25 +654,29 @@ namespace Simple.Validation.Tests.Validators
             var reports = Builder<Manager>
                 .CreateListOfSize(1)
                 .All()
-                //.Do(m => m.Age += 20)
-                .Do(m => m.Address = Builder<Address>.CreateNew().Build())
-                .Do(m => m.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
-                .Do(m => m.ReportsTo = manager)
                 .Do(m => m.Reports = Builder<Employee>
                     .CreateListOfSize(10)
                     .All()
-                    .Do(e => e.Address = Builder<Address>.CreateNew().Build())
-                    .Do(e => e.ReportsTo = m)
-                    .Do(e => e.ContactInfo = Builder<ContactInfo>.CreateListOfSize(3).Build())
-                    .Do(e => e.Age += 20)
                     .Build())
                 .Build();
 
             manager.Reports = reports.Cast<Employee>().ToList();
 
-            var results = validator.Validate(manager).ToList();
+            foreach(var report in reports)
+            {
+                this.ValidationEngine
+                    .Validate(typeof(Manager), report, "Save")
+                    .Returns(new []
+                        {
+                            new ValidationResult()
+                                {
+                                    PropertyName = "Age",
+                                    Message = string.Format("Report {0} has an error", report.EmployeeId),
+                                },
+                        });
+            }
 
-            // Assert
+            var results = validator.Validate(manager).ToList();
 
             // Assert
             Assert.That(results, Is.Not.Empty);
@@ -676,6 +691,23 @@ namespace Simple.Validation.Tests.Validators
                     Assert.That(expectedResult.Context == manager);
                 }
             }
+        }
+
+        [Test]
+        public void methodName()
+        {
+            // Arrange
+            this.ValidationEngine = Substitute.For<IValidationEngine>();
+
+            var report = new Manager();
+
+            // Act
+            this.ValidationEngine.Validate(typeof(Manager), report, Arg.Is<string[]>(row => row.Contains("Save"))).Returns(new[] { new ValidationResult(), });
+
+            // Assert
+
+            var results = this.ValidationEngine.Validate(typeof (Manager), report, new[] {"Save"});
+            Assert.That(results, Is.Not.Empty);
         }
 
         [Test]

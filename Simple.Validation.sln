@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Validation.Silverlig
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Validation.Ninject.Silverlight", "Simple.Validation.Ninject.Silverlight\Simple.Validation.Ninject.Silverlight.csproj", "{57FA4906-5750-4EF7-BF30-B8441AFF66E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Personnel.Sample.Integration.Tests", "Personnel.Sample.Integration.Tests\Personnel.Sample.Integration.Tests.csproj", "{FC541B57-FAC6-4D30-9B4A-EC1B01ABD909}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{57FA4906-5750-4EF7-BF30-B8441AFF66E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57FA4906-5750-4EF7-BF30-B8441AFF66E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57FA4906-5750-4EF7-BF30-B8441AFF66E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC541B57-FAC6-4D30-9B4A-EC1B01ABD909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC541B57-FAC6-4D30-9B4A-EC1B01ABD909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC541B57-FAC6-4D30-9B4A-EC1B01ABD909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC541B57-FAC6-4D30-9B4A-EC1B01ABD909}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +96,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CC9D9DFF-DCE5-4E4E-9C7A-17F0238770C6} = {D029A35A-F9C5-4345-AAC2-28AF0DC10B11}
 		{D74F0584-2F85-46A8-BB11-978C2B5C1721} = {D029A35A-F9C5-4345-AAC2-28AF0DC10B11}
+		{FC541B57-FAC6-4D30-9B4A-EC1B01ABD909} = {D029A35A-F9C5-4345-AAC2-28AF0DC10B11}
 		{2B2AF60A-676F-454E-B495-44B38B276DDD} = {882E86DA-1AB8-47AA-B333-B243B834C8FD}
 		{C192DB8E-55EC-4F53-A2DD-8D9A1E54702E} = {30F1047C-1844-4B73-8B56-81A9A8265B87}
 		{64CB1A9F-F147-4B27-8F60-59F014736F5A} = {30F1047C-1844-4B73-8B56-81A9A8265B87}

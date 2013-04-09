@@ -40,20 +40,6 @@ namespace Simple.Validation.Validators
 
             var materialized = enumerableValue.ToList();
 
-            //var size = materialized.Count();
-            //if (_minCount.HasValue && _minCount > size) 
-            //    results.Add(NewValidationResult(value));
-
-            //if (_minSize.HasValue && _minSize < size)
-            //    results.Add(NewValidationResult(value));
-
-            //if (_unique)
-            //{
-            //    var uniqueValidationResult = ValidateUnique(value, materialized);
-            //    if (uniqueValidationResult != null)
-            //        results.Add(uniqueValidationResult);
-            //}
-
             if (_cascade)
                 CascadeValidate(value, materialized, results);
 
@@ -65,7 +51,7 @@ namespace Simple.Validation.Validators
             var list = enumerableValue.ToList();
             for (var i = 0; i < list.Count; i++)
             {
-                var item = list[0];
+                var item = list[i];
                 var typeOfValidatorToUse = _cascadePropertyType ?? item.GetType();
                 var validationResults = Validator.Validate(typeOfValidatorToUse, item, _cascadeRulesSets).ToList();
 
