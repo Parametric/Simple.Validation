@@ -43,7 +43,10 @@ namespace Simple.Validation.Validators
                 yield break;
 
             if (_required && !IsSpecified(value))
+            {
                 yield return NewValidationResult(context, value);
+                yield break;
+            }
 
             if (value == null)
                 yield break;

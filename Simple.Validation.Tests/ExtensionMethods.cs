@@ -24,11 +24,11 @@ namespace Simple.Validation.Tests
             ValidationResult result;
             if (type == null)
             {
-                result = self.SingleOrDefault(v => v.PropertyName == propertyName && v.Type == null);
+                result = self.FirstOrDefault(v => v.PropertyName == propertyName && v.Type == null);
             }
             else
             {
-                result = self.SingleOrDefault(v => v.PropertyName == propertyName && v.Type != null && v.Type.Equals(type));
+                result = self.FirstOrDefault(v => v.PropertyName == propertyName && v.Type != null && v.Type.Equals(type));
             }
             return result;
         }

@@ -169,6 +169,30 @@ namespace Simple.Validation.Tests.Validators
         }
 
         [Test]
+        public void RequiredAndAssertReturnOnlyOneResultWhenPropertyValueIsEmptyString()
+        {
+            // Arrange
+            var employee = new Employee()
+                               {
+                                   LastName = string.Empty
+                               };
+            var validator = Properties<Employee>
+                .For(e => e.LastName)
+                .Required()
+                .Assert((entity, propertyValue) => false)
+                ;
+
+
+            // Act
+            var results = validator.Validate(employee).ToList();
+
+            // Assert
+            results.AssertInvalidFor("LastName", null);
+            Assert.That(results, Has.Count.EqualTo(1));
+     
+        }
+
+        [Test]
         public void ValidateRequired_IgnoreWhitespace()
         {
             // Arrange
