@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncValidationEngine.cs" />
     <Compile Include="Comparers\PredicateEqualityComparer.cs" />
     <Compile Include="Comparers\SelectorEqualityComparer.cs" />
     <Compile Include="DataAnnotations\ReflectionExtensions.cs" />
